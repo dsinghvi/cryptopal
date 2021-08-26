@@ -3,6 +3,7 @@
  */
 require("@nomiclabs/hardhat-waffle");
 require("dotenv").config();
+require("./scripts/sendEther");
 
 // Possible network values
 const TEST_NETWORK = "TEST_NETWORK"
@@ -25,7 +26,7 @@ if (NETWORK === TEST_NETWORK) {
 } else if (NETWORK === LOCAL_NETWORK) {
   networks = {
     hardhat: {
-      chainId: 1337
+      chainId: 1337,
     },
   }
 }
