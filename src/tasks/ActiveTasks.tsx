@@ -72,11 +72,11 @@ function renderVoteCell(props: ActiveTaskProps, task: Task) {
 function castApproval(isClientView: boolean, smartContract: Freelancer, task: Task) {
     if (isClientView) {
         smartContract
-            .clientVote(task.taskId, TaskVote.Approved)
+            .clientVote(task.taskId as any, TaskVote.Approved)
             .catch(err => console.log(err))
     } else {
         smartContract
-            .clientVote(task.taskId, TaskVote.Approved)
+            .freelancerVote(task.taskId as any, TaskVote.Approved)
             .catch(err => console.log(err))
     }
 }
@@ -84,11 +84,11 @@ function castApproval(isClientView: boolean, smartContract: Freelancer, task: Ta
 function castDeclined(isClientView: boolean, smartContract: Freelancer, task: Task) {
     if (isClientView) {
         smartContract
-            .clientVote(task.taskId, TaskVote.Declined)
+            .clientVote(task.taskId as any, TaskVote.Declined)
             .catch(err => console.log(err))
     } else {
         smartContract
-            .clientVote(task.taskId, TaskVote.Declined)
+            .freelancerVote(task.taskId as any, TaskVote.Declined)
             .catch(err => console.log(err))
     }
 }

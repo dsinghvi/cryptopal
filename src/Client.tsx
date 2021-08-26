@@ -1,6 +1,6 @@
 import React from "react";
 import { Freelancer } from "./generated/abis";
-import { Task } from "./App";
+import { Task, TaskVote } from "./App";
 import { TaskList } from "./TaskList";
 import { Button } from "@blueprintjs/core";
 import { useState } from "react";
@@ -24,13 +24,17 @@ export function Client(props: ClientProps) {
         setLoading(true);
         console.log("Loading contracts from the chain. " + props.walletAddress)
         props.smartContract.getTaskForContractor(props.walletAddress)
-        .then(taskId => props.smartContract.getTask(taskId))
-        .then(task => {
-            console.log("task value is " + task.value)
-            setActiveContract([new Task(task.description, Number(task.value), task.client.addr, task.freelancer.addr, task.client.vote, task.freelancer.vote)]);
-            setLoaded(true);
-            setLoading(false);
-        })
+        .then(taskId => 
+            props.smartContract
+                .getTask(taskId)
+                .then(task => {
+                    setActiveContract([new Task(task.description, Number(task.value), task.client.addr, task.freelancer.addr, task.client.vote, task.freelancer.vote, taskId)]);
+                    setLoaded(true);
+                    setLoading(false);
+                })
+                .catch(error => {
+                    console.log(error);
+                }))
         .catch(error => {
             console.log(error);
         })

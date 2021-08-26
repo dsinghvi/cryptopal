@@ -3,7 +3,7 @@ import './App.css';
 import { Freelancer__factory } from "./generated/abis";
 import { CONTRACT_ADDR } from "./ContractAddress"
 import { useState } from "react";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { Client } from "./Client";
 import { ConnectWallet } from './ConnectWallet';
 
@@ -27,17 +27,18 @@ export class Task {
     clientWallet: string, 
     contractorWallet ?: string,
     clientVote ?: TaskVote, 
-    contractorVote ?: TaskVote) {
-    this.taskId = "";
+    contractorVote ?: TaskVote, 
+    taskId ?: BigNumber) {
     this.taskPrice = taskPrice;
     this.taskDescription = taskDescription;
     this.clientWallet = clientWallet;
     this.contractorWallet = contractorWallet;
     this.clientVote = (clientVote !== undefined) ? clientVote : TaskVote.Undecided;
     this.contractorVote = (contractorVote !== undefined) ? contractorVote : TaskVote.Undecided;
+    this.taskId = taskId;
   }
 
-  taskId: string;
+  taskId?: BigNumber;
   taskPrice: number;
   taskDescription: string;
   clientWallet: string;
