@@ -41,7 +41,7 @@ contract Freelancer {
     uint256 private totalContracts;
 
     mapping(uint256 => Work) public contracts;
-    mapping(address => uint256) public freelanderToContractId;
+    mapping(address => uint256) public freelancerToContractId;
     mapping(address => uint256) public clientToContractId;
 
     event workFunded(Work work);
@@ -90,7 +90,7 @@ contract Freelancer {
         Entity memory entityFreelancer = Entity(_freelancer, Vote.undecided);
         Entity memory entityClient = Entity(payable(msg.sender), Vote.undecided); 
         contracts[totalContracts] = Work(entityFreelancer, entityClient, _description, _value, Status.funded, ConsensusType.unanimous_vote, Entity(payable(0), Vote.undecided));
-        freelanderToContractId[_freelancer] = totalContracts;
+        freelancerToContractId[_freelancer] = totalContracts;
         clientToContractId[msg.sender] = totalContracts;
 
         emit workFunded(contracts[totalContracts]);
@@ -106,7 +106,7 @@ contract Freelancer {
         Entity memory entityFreelancer = Entity(_freelancer, Vote.undecided);
         Entity memory entityClient = Entity(payable(msg.sender), Vote.undecided); 
         contracts[totalContracts] = Work(entityFreelancer, entityClient, _description, _value, Status.funded, ConsensusType.third_party, Entity(payable(_thirdParty), Vote.undecided));
-        freelanderToContractId[_freelancer] = totalContracts;
+        freelancerToContractId[_freelancer] = totalContracts;
         clientToContractId[msg.sender] = totalContracts;
 
         emit workFunded(contracts[totalContracts]);
@@ -119,9 +119,8 @@ contract Freelancer {
         checkWorkStatus(_id, Status.funded)
         checkConsensusType(_id, ConsensusType.unanimous_vote)
     {
+        contracts[_id].client.vote = vote;
         Work memory agreement = contracts[_id];
-        agreement.client.vote = vote;
-
         if (agreement.client.vote == Vote.approved) {
             agreement.freelancer.addr.transfer(agreement.value);
             emit transferFunds();
@@ -137,10 +136,8 @@ contract Freelancer {
         checkWorkStatus(_id, Status.funded)
         checkConsensusType(_id, ConsensusType.unanimous_vote)
     {
+        contracts[_id].freelancer.vote = vote;
         Work memory agreement = contracts[_id];
-        agreement.client.vote = vote;
-        agreement.freelancer.vote = vote;
-
         if (agreement.client.vote == Vote.approved && agreement.freelancer.vote == Vote.approved) {
             agreement.freelancer.addr.transfer(agreement.value);
             emit transferFunds();
@@ -157,6 +154,7 @@ contract Freelancer {
         checkWorkStatus(_id, Status.funded)
         checkConsensusType(_id, ConsensusType.third_party)
     {
+        contracts[_id].thirdParty.vote = vote;
         Work memory agreement = contracts[_id];
         if (vote == Vote.approved) {
             agreement.freelancer.addr.transfer(agreement.value);
@@ -172,10 +170,10 @@ contract Freelancer {
         public
         view 
         returns(uint256) {
-        return freelanderToContractId[_address];
+        return freelancerToContractId[_address];
     }
 
-    function getTaskForContractor(address _address) 
+    function getTaskForClient(address _address) 
         public
         view 
         returns(uint256) {

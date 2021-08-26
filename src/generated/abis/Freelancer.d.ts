@@ -25,12 +25,12 @@ interface FreelancerInterface extends ethers.utils.Interface {
     "clientToContractId(address)": FunctionFragment;
     "clientVote(uint256,uint8)": FunctionFragment;
     "contracts(uint256)": FunctionFragment;
+    "freelancerToContractId(address)": FunctionFragment;
     "freelancerVote(uint256,uint8)": FunctionFragment;
-    "freelanderToContractId(address)": FunctionFragment;
     "fundWork(string,uint256,address)": FunctionFragment;
     "fundWorkWithThirdParty(string,uint256,address,address)": FunctionFragment;
     "getTask(uint256)": FunctionFragment;
-    "getTaskForContractor(address)": FunctionFragment;
+    "getTaskForClient(address)": FunctionFragment;
     "getTaskForFreelancer(address)": FunctionFragment;
     "thirdPartyVote(uint256,uint8)": FunctionFragment;
   };
@@ -48,12 +48,12 @@ interface FreelancerInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "freelancerVote",
-    values: [BigNumberish, BigNumberish]
+    functionFragment: "freelancerToContractId",
+    values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "freelanderToContractId",
-    values: [string]
+    functionFragment: "freelancerVote",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "fundWork",
@@ -68,7 +68,7 @@ interface FreelancerInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getTaskForContractor",
+    functionFragment: "getTaskForClient",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -87,11 +87,11 @@ interface FreelancerInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "clientVote", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "contracts", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "freelancerVote",
+    functionFragment: "freelancerToContractId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "freelanderToContractId",
+    functionFragment: "freelancerVote",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "fundWork", data: BytesLike): Result;
@@ -101,7 +101,7 @@ interface FreelancerInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "getTask", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getTaskForContractor",
+    functionFragment: "getTaskForClient",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -200,16 +200,16 @@ export class Freelancer extends BaseContract {
       }
     >;
 
+    freelancerToContractId(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     freelancerVote(
       _id: BigNumberish,
       vote: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    freelanderToContractId(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
 
     fundWork(
       _description: string,
@@ -251,7 +251,7 @@ export class Freelancer extends BaseContract {
       ]
     >;
 
-    getTaskForContractor(
+    getTaskForClient(
       _address: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
@@ -302,16 +302,16 @@ export class Freelancer extends BaseContract {
     }
   >;
 
+  freelancerToContractId(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   freelancerVote(
     _id: BigNumberish,
     vote: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  freelanderToContractId(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   fundWork(
     _description: string,
@@ -351,7 +351,7 @@ export class Freelancer extends BaseContract {
     }
   >;
 
-  getTaskForContractor(
+  getTaskForClient(
     _address: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
@@ -402,16 +402,16 @@ export class Freelancer extends BaseContract {
       }
     >;
 
+    freelancerToContractId(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     freelancerVote(
       _id: BigNumberish,
       vote: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    freelanderToContractId(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     fundWork(
       _description: string,
@@ -451,7 +451,7 @@ export class Freelancer extends BaseContract {
       }
     >;
 
-    getTaskForContractor(
+    getTaskForClient(
       _address: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -532,15 +532,15 @@ export class Freelancer extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    freelancerToContractId(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     freelancerVote(
       _id: BigNumberish,
       vote: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    freelanderToContractId(
-      arg0: string,
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     fundWork(
@@ -560,7 +560,7 @@ export class Freelancer extends BaseContract {
 
     getTask(_id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    getTaskForContractor(
+    getTaskForClient(
       _address: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -594,15 +594,15 @@ export class Freelancer extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    freelancerToContractId(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     freelancerVote(
       _id: BigNumberish,
       vote: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    freelanderToContractId(
-      arg0: string,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     fundWork(
@@ -625,7 +625,7 @@ export class Freelancer extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getTaskForContractor(
+    getTaskForClient(
       _address: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

@@ -23,7 +23,7 @@ export function Client(props: ClientProps) {
     if (!loaded && !loading) {
         setLoading(true);
         console.log("Loading contracts from the chain. " + props.walletAddress)
-        props.smartContract.getTaskForContractor(props.walletAddress)
+        props.smartContract.getTaskForClient(props.walletAddress)
         .then(taskId => 
             props.smartContract
                 .getTask(taskId)
@@ -40,9 +40,9 @@ export function Client(props: ClientProps) {
         })
     }
 
-    return <div>
+    return (<div>
         <ProposedTasks proposedTasks={props.proposedTasks} />
         <AcceptedTasks acceptedTasks={props.acceptedTasks} smartContract={props.smartContract} />
         <ActiveTasks smartContract={props.smartContract} isCLientView={true} activeTasks={activeContracts} />
-    </div>
+    </div>)
 }
