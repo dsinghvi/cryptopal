@@ -1,9 +1,12 @@
-import { HTMLTable } from "@blueprintjs/core";
+import { Button, HTMLTable, Intent } from "@blueprintjs/core";
 import { Task, TaskVote } from "../App";
+import { Freelancer } from "../generated/abis";
 
 
 interface ActiveTaskProps {
+    isCLientView: boolean;
     activeTasks: Array<Task>;
+    smartContract: Freelancer;
 }
 
 export function ActiveTasks(props: ActiveTaskProps) {
@@ -16,19 +19,43 @@ export function ActiveTasks(props: ActiveTaskProps) {
                     <th>Task Description</th>
                     <th>Task Price</th>
                     <th>Contractor Wallet</th>
-                    <th>Client Vote</th>
-                    <th>Contractor Vote</th>
+                    <th>{props.isCLientView ? "Contractor Vote" : "Client Vote"}</th>
+                    <th>Your vote</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {props.activeTasks.map(activeTask => 
-                        <tr>
-                            <td>{activeTask.taskDescription}</td>
-                            <td>{activeTask.taskPrice}</td>
-                            <td>{activeTask.contractorWallet}</td>
-                            <td>{TaskVote[activeTask.clientVote]}</td>
-                            <td>{TaskVote[activeTask.contractorVote]}</td>
-                        </tr>
+                    {props.activeTasks.map(activeTask => {
+                        if (props.isCLientView) {
+                            return (
+                            <tr>
+                                <td>{activeTask.taskDescription}</td>
+                                <td>{activeTask.taskPrice}</td>
+                                <td>{activeTask.contractorWallet}</td>
+                                <td>{props.isCLientView ? TaskVote[activeTask.contractorVote] : TaskVote[activeTask.clientVote]}</td>
+                                <td>
+                                    <Button intent={Intent.SUCCESS} onClick={() => {
+                                        if (props.isCLientView) {
+                                            props.smartContract.clientVote(activeTask.taskId, TaskVote.Approved)
+                                        } else {
+                                            props.smartContract.clientVote(activeTask.taskId, TaskVote.Approved)
+                                        }
+                                    }}>
+                                        Approve!
+                                    </Button> 
+                                    <Button intent={Intent.DANGER} onClick={() => {
+                                        if (props.isCLientView) {
+                                            props.smartContract.clientVote(activeTask.taskId, TaskVote.Approved)
+                                        } else {
+                                            props.smartContract.clientVote(activeTask.taskId, TaskVote.Approved)
+                                        }
+                                    }}>
+                                        Deny!
+                                    </Button> 
+                                </td>
+                            </tr>
+                            );
+                        }
+                    }
                     )}
                 </tbody>
                 <tfoot>

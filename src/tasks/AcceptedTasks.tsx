@@ -27,11 +27,12 @@ export function AcceptedTasks(props: AcceptedTaskProps) {
                             <td>{acceptedTask.taskPrice}</td>
                             <td>{acceptedTask.contractorWallet}</td>
                             <td>
-                            <Button onClick={() => 
-                                props.smartContract.fundWork("taskDescription", 30, "0x70997970c51812dc3a010c7d01b50e0d17dc79c8", { value: 30})
-                                .catch(error => console.log(error))}>
-                                Start task and stake ether!
-                            </Button> 
+                                <Button onClick={() => 
+                                    props.smartContract
+                                    .fundWork("taskDescription", 30, "0x70997970c51812dc3a010c7d01b50e0d17dc79c8", { value: 30})
+                                    .catch(error => console.log(error))}>
+                                    Start task and stake ether!
+                                </Button> 
                             </td>
                         </tr>
                     )}

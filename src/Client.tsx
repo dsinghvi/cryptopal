@@ -8,14 +8,14 @@ import { ActiveTasks } from "./tasks/ActiveTasks";
 import { ProposedTasks } from "./tasks/ProposedTasks";
 import { AcceptedTasks } from "./tasks/AcceptedTasks";
 
-interface ContractorProps {
+interface ClientProps {
     walletAddress: string;
     smartContract: Freelancer;
     proposedTasks: Array<Task>;
     acceptedTasks: Array<Task>;
 }
 
-export function Contractor(props: ContractorProps) {
+export function Client(props: ClientProps) {
     const [loaded, setLoaded] = useState(false);
     const [loading, setLoading] = useState(false);
     const [activeContracts, setActiveContract] = useState(new Array<Task>());
@@ -39,6 +39,6 @@ export function Contractor(props: ContractorProps) {
     return <div>
         <ProposedTasks proposedTasks={props.proposedTasks} />
         <AcceptedTasks acceptedTasks={props.acceptedTasks} smartContract={props.smartContract} />
-        <ActiveTasks activeTasks={activeContracts} />
+        <ActiveTasks smartContract={props.smartContract} isCLientView={true} activeTasks={activeContracts} />
     </div>
 }

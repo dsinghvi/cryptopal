@@ -4,7 +4,7 @@ import { Freelancer__factory } from "./generated/abis";
 import { CONTRACT_ADDR } from "./ContractAddress"
 import { useState } from "react";
 import { ethers } from "ethers";
-import { Contractor } from "./Contractor";
+import { Client } from "./Client";
 import { ConnectWallet } from './ConnectWallet';
 
 declare global {
@@ -66,7 +66,7 @@ function App() {
   if (walletAddr === "") {
     return <ConnectWallet setWalletAddress={walletAddress => setWalletAddr(walletAddress)}/>
   } else {
-    return <Contractor walletAddress={walletAddr} smartContract={freelancerSmartContract} proposedTasks={proposedTasks} acceptedTasks={acceptedTasks}></Contractor>
+    return <Client walletAddress={walletAddr} smartContract={freelancerSmartContract} proposedTasks={proposedTasks} acceptedTasks={acceptedTasks}></Client>
   }
 }
 
