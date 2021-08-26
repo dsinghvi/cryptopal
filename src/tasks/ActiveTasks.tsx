@@ -22,7 +22,7 @@ export function ActiveTasks(props: ActiveTaskProps) {
                     {props.activeTasks.map(activeTask => 
                         <tr>
                             <td>{activeTask.taskDescription}</td>
-                            <td>{activeTask.contractorWallet}</td>
+                            <td>{activeTask.taskPrice}</td>
                             <td>{activeTask.contractorWallet}</td>
                         </tr>
                     )}

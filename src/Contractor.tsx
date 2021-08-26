@@ -26,6 +26,7 @@ export function Contractor(props: ContractorProps) {
         props.smartContract.getTaskForContractor(props.walletAddress)
         .then(taskId => props.smartContract.getTask(taskId))
         .then(task => {
+            console.log("task value is " + task.value)
             setActiveContract([new Task(task.description, Number(task.value), task.client.addr, task.freelancer.addr)]);
             setLoaded(true);
             setLoading(false);
