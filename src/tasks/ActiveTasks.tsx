@@ -25,36 +25,15 @@ export function ActiveTasks(props: ActiveTaskProps) {
                 </thead>
                 <tbody>
                     {props.activeTasks.map(activeTask => {
-                        if (props.isCLientView) {
-                            return (
+                        return (
                             <tr>
                                 <td>{activeTask.taskDescription}</td>
                                 <td>{activeTask.taskPrice}</td>
                                 <td>{activeTask.contractorWallet}</td>
                                 <td>{props.isCLientView ? TaskVote[activeTask.contractorVote] : TaskVote[activeTask.clientVote]}</td>
-                                <td>
-                                    <Button intent={Intent.SUCCESS} onClick={() => {
-                                        if (props.isCLientView) {
-                                            props.smartContract.clientVote(activeTask.taskId, TaskVote.Approved)
-                                        } else {
-                                            props.smartContract.clientVote(activeTask.taskId, TaskVote.Approved)
-                                        }
-                                    }}>
-                                        Approve!
-                                    </Button> 
-                                    <Button intent={Intent.DANGER} onClick={() => {
-                                        if (props.isCLientView) {
-                                            props.smartContract.clientVote(activeTask.taskId, TaskVote.Approved)
-                                        } else {
-                                            props.smartContract.clientVote(activeTask.taskId, TaskVote.Approved)
-                                        }
-                                    }}>
-                                        Deny!
-                                    </Button> 
-                                </td>
+                                { renderVoteCell(props, activeTask) }
                             </tr>
-                            );
-                        }
+                         );
                     }
                     )}
                 </tbody>
@@ -62,4 +41,62 @@ export function ActiveTasks(props: ActiveTaskProps) {
                 </tfoot>
             </HTMLTable>
         </div>);
+}
+
+function renderVoteCell(props: ActiveTaskProps, task: Task) {
+    const voted = hasVoted(props.isCLientView, task);
+    if (voted) {
+        return (
+            <td>
+                {props.isCLientView ? TaskVote[task.clientVote] : TaskVote[task.contractorVote]}
+            </td>
+        );
+    } else {
+        return (
+            <td>
+                <Button 
+                    intent={Intent.SUCCESS} 
+                    onClick={() => castApproval(props.isCLientView, props.smartContract, task)}>
+                    Approve!
+                </Button> 
+                <Button
+                    intent={Intent.DANGER} 
+                    onClick={() => castDeclined(props.isCLientView, props.smartContract, task)}>
+                    Deny!
+                </Button> 
+            </td>
+        );
+    }
+}
+
+function castApproval(isClientView: boolean, smartContract: Freelancer, task: Task) {
+    if (isClientView) {
+        smartContract
+            .clientVote(task.taskId, TaskVote.Approved)
+            .catch(err => console.log(err))
+    } else {
+        smartContract
+            .clientVote(task.taskId, TaskVote.Approved)
+            .catch(err => console.log(err))
+    }
+}
+
+function castDeclined(isClientView: boolean, smartContract: Freelancer, task: Task) {
+    if (isClientView) {
+        smartContract
+            .clientVote(task.taskId, TaskVote.Declined)
+            .catch(err => console.log(err))
+    } else {
+        smartContract
+            .clientVote(task.taskId, TaskVote.Declined)
+            .catch(err => console.log(err))
+    }
+}
+
+function hasVoted(isClientView: boolean, task: Task) {
+    if (isClientView) {
+        return task.clientVote !== TaskVote.Undecided;
+    } else {
+        return task.contractorVote !== TaskVote.Undecided;
+    }
 }
