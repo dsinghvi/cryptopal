@@ -2,28 +2,26 @@ import { HTMLTable } from "@blueprintjs/core";
 import { Task } from "../App";
 
 
-interface ActiveTaskProps {
-    activeTasks: Array<Task>;
+interface ProposedTaskProps {
+    proposedTasks: Array<Task>;
 }
 
-export function ActiveTasks(props: ActiveTaskProps) {
+export function ProposedTasks(props: ProposedTaskProps) {
     return (
         <div>
-            <h4>Active Tasks</h4>
+            <h4>Proposed Tasks</h4>
             <HTMLTable bordered={true} interactive={true} striped={true}>
                 <thead>
                     <tr>
                     <th>Task Description</th>
                     <th>Task Price</th>
-                    <th>Contractor Wallet</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {props.activeTasks.map(activeTask => 
+                    {props.proposedTasks.map(proposedTask => 
                         <tr>
-                            <td>{activeTask.taskDescription}</td>
-                            <td>{activeTask.contractorWallet}</td>
-                            <td>{activeTask.contractorWallet}</td>
+                            <td>{proposedTask.taskDescription}</td>
+                            <td>{proposedTask.taskPrice}</td>
                         </tr>
                     )}
                 </tbody>
