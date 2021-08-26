@@ -35,12 +35,11 @@ function App() {
   const [acceptedTasks, setAcceptedTasks] = useState([ new Task("bla", "bla", "bla"), new Task("bla", "bla", "bla"), new Task("bla", "bla", "bla")])
   const [walletAddr, setWalletAddr] = useState("");
 
-  return (
-    <div>
-      <ConnectWallet setWalletAddress={walletAddress => setWalletAddr(walletAddress)}/>
-      <Contractor smartContract={freelancerSmartContract} proposedTasks={proposedTasks} acceptedTasks={acceptedTasks}></Contractor>
-    </div>
-  );
+  if (walletAddr === "") {
+    return <ConnectWallet setWalletAddress={walletAddress => setWalletAddr(walletAddress)}/>
+  } else {
+    return <Contractor walletAddress={walletAddr} smartContract={freelancerSmartContract} proposedTasks={proposedTasks} acceptedTasks={acceptedTasks}></Contractor>
+  }
 }
 
 export default App;

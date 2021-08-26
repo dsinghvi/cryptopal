@@ -3,11 +3,16 @@ const hre = require("hardhat");
 async function main() {
     const [deployer] = await hre.ethers.getSigners();
 
-    const EthereumFaucet = await hre.ethers.getContractFactory("EthereumFaucet");
-    const faucet = await EthereumFaucet.deploy();
+    console.log(
+        "Deploying the contracts with the account:",
+        await deployer.getAddress()
+    );
 
-    await faucet.deployed();
-    console.log(`Ethereum faucet deployed to address: ${faucet.address}`);
+    const Freelancer = await hre.ethers.getContractFactory("Freelancer");
+    const freelancerContract = await Freelancer.deploy();
+
+    await freelancerContract.deployed();
+    console.log(`Ethereum faucet deployed to address: ${freelancerContract.address}`);
 
 }
 
