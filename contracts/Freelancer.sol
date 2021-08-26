@@ -97,21 +97,21 @@ contract Freelancer {
         totalContracts++;
     }
 
-    // function fundWork(string memory _description, uint256 _value, address payable _freelancer, address payable _thirdParty) 
-    //     public
-    //     payable
-    //     sufficientFunds(_value, msg.value)
-    // {
-    //     require(_thirdParty != _freelancer && _thirdParty != msg.sender, "The client or freelancer cannot be the third party");
-    //     Entity memory entityFreelancer = Entity(_freelancer, Vote.undecided);
-    //     Entity memory entityClient = Entity(payable(msg.sender), Vote.undecided); 
-    //     contracts[totalContracts] = Work(entityFreelancer, entityClient, _description, _value, Status.funded, ConsensusType.third_party, Entity(payable(_thirdParty), Vote.undecided));
-    //     freelanderToContractId[_freelancer] = totalContracts;
-    //     clientToContractId[msg.sender] = totalContracts;
+    function fundWorkWithThirdParty(string memory _description, uint256 _value, address payable _freelancer, address payable _thirdParty) 
+        public
+        payable
+        sufficientFunds(_value, msg.value)
+    {
+        require(_thirdParty != _freelancer && _thirdParty != msg.sender, "The client or freelancer cannot be the third party");
+        Entity memory entityFreelancer = Entity(_freelancer, Vote.undecided);
+        Entity memory entityClient = Entity(payable(msg.sender), Vote.undecided); 
+        contracts[totalContracts] = Work(entityFreelancer, entityClient, _description, _value, Status.funded, ConsensusType.third_party, Entity(payable(_thirdParty), Vote.undecided));
+        freelanderToContractId[_freelancer] = totalContracts;
+        clientToContractId[msg.sender] = totalContracts;
 
-    //     emit workFunded(contracts[totalContracts]);
-    //     totalContracts++;
-    // }
+        emit workFunded(contracts[totalContracts]);
+        totalContracts++;
+    }
 
     function clientVote(uint256 _id, Vote vote) 
         public
@@ -166,5 +166,26 @@ contract Freelancer {
             agreement.client.addr.transfer(agreement.value);
             emit transferFunds();
         }
+    }
+
+    function getTaskForFreelancer(address _address) 
+        public
+        view 
+        returns(uint256) {
+        return freelanderToContractId[_address];
+    }
+
+    function getTaskForContractor(address _address) 
+        public
+        view 
+        returns(uint256) {
+        return clientToContractId[_address];
+    }
+
+    function getTask(uint256 _id) 
+        public
+        view 
+        returns(Work memory) {
+        return contracts[_id];
     }
 }

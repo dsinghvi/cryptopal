@@ -4,6 +4,7 @@ import { Task } from "./App";
 import { TaskList } from "./TaskList";
 import { Button } from "@blueprintjs/core";
 import { useState } from "react";
+import { ActiveTasks } from "./tasks/ActiveTasks";
 
 interface ContractorProps {
     walletAddress: string;
@@ -20,10 +21,10 @@ export function Contractor(props: ContractorProps) {
     if (!loaded && !loading) {
         setLoading(true);
         console.log("Loading contracts from the chain. " + props.walletAddress)
-        props.smartContract.clientToContractId(props.walletAddress)
-        .then(taskId => props.smartContract.contracts(taskId))
-        .then(contract => {
-            setActiveContract([new Task(contract.description, contract.client.addr, contract.freelancer.addr)]);
+        props.smartContract.getTaskForContractor(props.walletAddress)
+        .then(taskId => props.smartContract.getTask(taskId))
+        .then(task => {
+            setActiveContract([new Task(task.description, task.client.addr, task.freelancer.addr)]);
             setLoaded(true);
             setLoading(false);
         })
@@ -41,6 +42,7 @@ export function Contractor(props: ContractorProps) {
         <TaskList tasks={props.acceptedTasks} title="Accepted Tasks"></TaskList>
         <TaskList tasks={activeContracts} title="Active Tasks"></TaskList>
         <TaskList tasks={[]} title="Finished Tasks"></TaskList>
+        <ActiveTasks activeTasks={activeContracts} />
     </div>
 }
 
