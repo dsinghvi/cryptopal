@@ -5,6 +5,7 @@ import { CONTRACT_ADDR } from "./ContractAddress"
 import { useState } from "react";
 import { ethers } from "ethers";
 import { Contractor } from "./Contractor";
+import { ConnectWallet } from './ConnectWallet';
 
 declare global {
   interface Window {
@@ -32,9 +33,13 @@ function App() {
   const [freelancerSmartContract] = useState(Freelancer__factory.connect(CONTRACT_ADDR, provider.getSigner(0)));
   const [proposedTasks, setProposedTasks] = useState([ new Task("bla", "bla"), new Task("bla", "bla"), new Task("bla", "bla")])
   const [acceptedTasks, setAcceptedTasks] = useState([ new Task("bla", "bla", "bla"), new Task("bla", "bla", "bla"), new Task("bla", "bla", "bla")])
+  const [walletAddr, setWalletAddr] = useState("");
 
   return (
-    <Contractor smartContract={freelancerSmartContract} proposedTasks={proposedTasks} acceptedTasks={acceptedTasks}></Contractor>
+    <div>
+      <ConnectWallet setWalletAddress={walletAddress => setWalletAddr(walletAddress)}/>
+      <Contractor smartContract={freelancerSmartContract} proposedTasks={proposedTasks} acceptedTasks={acceptedTasks}></Contractor>
+    </div>
   );
 }
 
