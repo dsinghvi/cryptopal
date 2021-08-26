@@ -1,11 +1,9 @@
 import React from "react";
-import { ethers } from "ethers";
-import { Freelancer, Freelancer__factory } from "./generated/abis";
-import { CONTRACT_ADDR } from "./ContractAddress"
-import { useState } from "react-dom/node_modules/@types/react";
+import { Freelancer } from "./generated/abis";
 import { Task } from "./App";
 import { TaskList } from "./TaskList";
 import { Button } from "@blueprintjs/core";
+import { useState } from "react";
 
 interface ContractorProps {
     walletAddress: string;
@@ -14,22 +12,36 @@ interface ContractorProps {
     acceptedTasks: Array<Task>;
 }
 
-export class Contractor extends React.Component<ContractorProps, {}> {
+export function Contractor(props: ContractorProps) {
+    const [loaded, setLoaded] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [activeContracts, setActiveContract] = useState(new Array<Task>());
 
-    render() {
-        // console.log(this.props.smartContract?.clientToContractId(this.props.walletAddress));
-        return <div>
-            <Button onClick={() => 
-                this.props.smartContract.fundWork("taskDescription", 30, "0x70997970c51812dc3a010c7d01b50e0d17dc79c8", { value: 30})
-                .catch(error => console.log(error))}>    
-            </Button>
-            <TaskList tasks={this.props.proposedTasks} title="Proposed Tasks"></TaskList>
-            <TaskList tasks={this.props.acceptedTasks} title="Accepted Tasks"></TaskList>
-            <TaskList tasks={[]} title="Active Tasks"></TaskList>
-            <TaskList tasks={[]} title="Finished Tasks"></TaskList>
-        </div>
+    if (!loaded && !loading) {
+        setLoading(true);
+        console.log("Loading contracts from the chain. " + props.walletAddress)
+        props.smartContract.clientToContractId(props.walletAddress)
+        .then(taskId => props.smartContract.contracts(taskId))
+        .then(contract => {
+            setActiveContract([new Task(contract.description, contract.client.addr, contract.freelancer.addr)]);
+            setLoaded(true);
+            setLoading(false);
+        })
+        .catch(error => {
+            console.log(error);
+        })
     }
 
+    return <div>
+        <Button onClick={() => 
+            props.smartContract.fundWork("taskDescription", 30, "0x70997970c51812dc3a010c7d01b50e0d17dc79c8", { value: 30})
+            .catch(error => console.log(error))}>    
+        </Button>
+        <TaskList tasks={props.proposedTasks} title="Proposed Tasks"></TaskList>
+        <TaskList tasks={props.acceptedTasks} title="Accepted Tasks"></TaskList>
+        <TaskList tasks={activeContracts} title="Active Tasks"></TaskList>
+        <TaskList tasks={[]} title="Finished Tasks"></TaskList>
+    </div>
 }
 
 /**
