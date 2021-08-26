@@ -13,14 +13,28 @@ declare global {
   }
 }
 
+export enum TaskVote {
+  Approved, 
+  Declined, 
+  Undecided
+}
+
 export class Task {
 
-  constructor(taskDescription: string, taskPrice: number, clientWallet: string, contractorWallet ?: string) {
+  constructor(
+    taskDescription: string, 
+    taskPrice: number, 
+    clientWallet: string, 
+    contractorWallet ?: string,
+    clientVote ?: TaskVote, 
+    contractorVote ?: TaskVote) {
     this.taskId = "";
     this.taskPrice = taskPrice;
     this.taskDescription = taskDescription;
     this.clientWallet = clientWallet;
     this.contractorWallet = contractorWallet;
+    this.clientVote = (clientVote !== undefined) ? clientVote : TaskVote.Undecided;
+    this.contractorVote = (contractorVote !== undefined) ? contractorVote : TaskVote.Undecided;
   }
 
   taskId: string;
@@ -28,6 +42,9 @@ export class Task {
   taskDescription: string;
   clientWallet: string;
   contractorWallet?: string; 
+
+  clientVote: TaskVote;
+  contractorVote: TaskVote;
 
 }
 

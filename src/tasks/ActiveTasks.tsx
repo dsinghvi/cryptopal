@@ -1,5 +1,5 @@
 import { HTMLTable } from "@blueprintjs/core";
-import { Task } from "../App";
+import { Task, TaskVote } from "../App";
 
 
 interface ActiveTaskProps {
@@ -16,6 +16,8 @@ export function ActiveTasks(props: ActiveTaskProps) {
                     <th>Task Description</th>
                     <th>Task Price</th>
                     <th>Contractor Wallet</th>
+                    <th>Client Vote</th>
+                    <th>Contractor Vote</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -24,6 +26,8 @@ export function ActiveTasks(props: ActiveTaskProps) {
                             <td>{activeTask.taskDescription}</td>
                             <td>{activeTask.taskPrice}</td>
                             <td>{activeTask.contractorWallet}</td>
+                            <td>{TaskVote[activeTask.clientVote]}</td>
+                            <td>{TaskVote[activeTask.contractorVote]}</td>
                         </tr>
                     )}
                 </tbody>
