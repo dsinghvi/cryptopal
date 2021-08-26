@@ -41,8 +41,8 @@ contract Freelancer {
     uint256 private totalContracts;
 
     mapping(uint256 => Work) public contracts;
-    mapping(address => uint256) public freelancerToContractId;
-    mapping(address => uint256) public clientToContractId;
+    mapping(address => uint256[]) public freelancerToContractId;
+    mapping(address => uint256[]) public clientToContractId;
 
     event workFunded(Work work);
     event transferFunds();
@@ -52,17 +52,17 @@ contract Freelancer {
     }
 
     modifier onlyFreelancer(uint256 _id) {
-        require(msg.sender == contracts[_id].freelancer.addr);
+        require(msg.sender == contracts[_id].freelancer.addr, "Only freelancer can call this flow.");
         _;
     }
 
     modifier onlyClient(uint256 _id) {
-        require(msg.sender == contracts[_id].client.addr);
+        require(msg.sender == contracts[_id].client.addr, "Only client can call this flow");
         _;
     }
 
     modifier onlyThirdParty(uint256 _id) {
-        require(msg.sender == contracts[_id].thirdParty.addr);
+        require(msg.sender == contracts[_id].thirdParty.addr, "Only appointed third party can call this flow");
         _;
     }
 
@@ -78,7 +78,7 @@ contract Freelancer {
 
     // "_" differentiates between function arguments and global variables
     modifier sufficientFunds(uint256 _value, uint256 _payment) {
-        require(_payment == _value);
+        require(_payment == _value, "Funds are not equal to approved amount.");
         _;
     }
 
@@ -90,8 +90,8 @@ contract Freelancer {
         Entity memory entityFreelancer = Entity(_freelancer, Vote.undecided);
         Entity memory entityClient = Entity(payable(msg.sender), Vote.undecided); 
         contracts[totalContracts] = Work(entityFreelancer, entityClient, _description, _value, Status.funded, ConsensusType.unanimous_vote, Entity(payable(0), Vote.undecided));
-        freelancerToContractId[_freelancer] = totalContracts;
-        clientToContractId[msg.sender] = totalContracts;
+        freelancerToContractId[_freelancer].push(totalContracts);
+        clientToContractId[msg.sender].push(totalContracts);
 
         emit workFunded(contracts[totalContracts]);
         totalContracts++;
@@ -106,8 +106,8 @@ contract Freelancer {
         Entity memory entityFreelancer = Entity(_freelancer, Vote.undecided);
         Entity memory entityClient = Entity(payable(msg.sender), Vote.undecided); 
         contracts[totalContracts] = Work(entityFreelancer, entityClient, _description, _value, Status.funded, ConsensusType.third_party, Entity(payable(_thirdParty), Vote.undecided));
-        freelancerToContractId[_freelancer] = totalContracts;
-        clientToContractId[msg.sender] = totalContracts;
+        freelancerToContractId[_freelancer].push(totalContracts);
+        clientToContractId[msg.sender].push(totalContracts);
 
         emit workFunded(contracts[totalContracts]);
         totalContracts++;
@@ -169,14 +169,14 @@ contract Freelancer {
     function getTaskForFreelancer(address _address) 
         public
         view 
-        returns(uint256) {
+        returns(uint256[] memory) {
         return freelancerToContractId[_address];
     }
 
     function getTaskForClient(address _address) 
         public
         view 
-        returns(uint256) {
+        returns(uint256[] memory) {
         return clientToContractId[_address];
     }
 
