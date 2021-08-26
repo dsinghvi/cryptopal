@@ -178,18 +178,10 @@ export class Freelancer extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    "fundWork(string,uint256,address)"(
+    fundWork(
       _description: string,
       _value: BigNumberish,
       _freelancer: string,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "fundWork(string,uint256,address,address)"(
-      _description: string,
-      _value: BigNumberish,
-      _freelancer: string,
-      _thirdParty: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -245,18 +237,10 @@ export class Freelancer extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  "fundWork(string,uint256,address)"(
+  fundWork(
     _description: string,
     _value: BigNumberish,
     _freelancer: string,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "fundWork(string,uint256,address,address)"(
-    _description: string,
-    _value: BigNumberish,
-    _freelancer: string,
-    _thirdParty: string,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -312,18 +296,10 @@ export class Freelancer extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "fundWork(string,uint256,address)"(
+    fundWork(
       _description: string,
       _value: BigNumberish,
       _freelancer: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "fundWork(string,uint256,address,address)"(
-      _description: string,
-      _value: BigNumberish,
-      _freelancer: string,
-      _thirdParty: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -409,18 +385,10 @@ export class Freelancer extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "fundWork(string,uint256,address)"(
+    fundWork(
       _description: string,
       _value: BigNumberish,
       _freelancer: string,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "fundWork(string,uint256,address,address)"(
-      _description: string,
-      _value: BigNumberish,
-      _freelancer: string,
-      _thirdParty: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -459,18 +427,10 @@ export class Freelancer extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "fundWork(string,uint256,address)"(
+    fundWork(
       _description: string,
       _value: BigNumberish,
       _freelancer: string,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "fundWork(string,uint256,address,address)"(
-      _description: string,
-      _value: BigNumberish,
-      _freelancer: string,
-      _thirdParty: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
