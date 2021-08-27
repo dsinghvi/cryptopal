@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ActiveTasks } from "./tasks/ActiveTasks";
 import { ProposedTasks } from "./tasks/ProposedTasks";
 import { AcceptedTasks } from "./tasks/AcceptedTasks";
+import { BigNumber } from "ethers";
 
 interface ClientProps {
     walletAddress: string;
@@ -47,6 +48,28 @@ export function Client(props: ClientProps) {
             clearInterval(pollDataInterval);
         }
     }, [pollData, pollDataInterval]);
+
+    smartContract.on("workFunded", (task: 
+    // Copy paste this type from the generated typescript bindings
+      [
+        [string, number] & { addr: string; vote: number },
+        [string, number] & { addr: string; vote: number },
+        string,
+        BigNumber,
+        number,
+        number,
+        [string, number] & { addr: string; vote: number }
+      ] & {
+        freelancer: [string, number] & { addr: string; vote: number };
+        client: [string, number] & { addr: string; vote: number };
+        description: string;
+        value: BigNumber;
+        status: number;
+        consensusType: number;
+        thirdParty: [string, number] & { addr: string; vote: number };
+      }) => {
+        console.log("task was funded" + task.description)
+    })
 
     return (<div style={styles.container}>
         <ProposedTasks proposedTasks={props.proposedTasks} />
