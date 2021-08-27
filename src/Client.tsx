@@ -22,20 +22,31 @@ const styles = {
 export function Client(props: ClientProps) {
     const { smartContract, walletAddress} = props;
     const [tasks, setTasks] = useState(new Array<Task>());
+    const [pollData, setPollData] = React.useState(false);
+    const [pollDataInterval, setPollDataInterval] = React.useState<NodeJS.Timeout>();
+  
+    const fetchTasks = React.useCallback(async () => {
+        const taskIds = await smartContract.getTaskForClient(walletAddress);
+        const tasks = await Promise.all(taskIds.map(async (taskId) => {
+            const task =  await smartContract.getTask(taskId);
+            return new Task(task.description, Number(task.value), task.client.addr, task.freelancer.addr, task.client.vote, task.freelancer.vote, taskId)
+        }))
+        setTasks(tasks);
+    }, [walletAddress, smartContract])
 
     React.useEffect(() => {
-        const fetchTasks = async () => {
-            if(tasks.length <= 0) {
-                const taskIds = await smartContract.getTaskForClient(walletAddress);
-                const tasks = await Promise.all(taskIds.map(async (taskId) => {
-                    const task =  await smartContract.getTask(taskId);
-                    return new Task(task.description, Number(task.value), task.client.addr, task.freelancer.addr, task.client.vote, task.freelancer.vote, taskId)
-                }))
-                setTasks(tasks);
-            }
+        if (!pollData) {
+          const pollDataInterval = setInterval(() => {
+              fetchTasks();
+          }, 1000);
+          setPollData(true);
+          setPollDataInterval(pollDataInterval);
         }
-        fetchTasks();
-    }, [tasks])
+        return () => {
+            //@ts-ignore
+            clearInterval(pollDataInterval);
+        }
+    }, [pollData, pollDataInterval]);
 
     return (<div style={styles.container}>
         <ProposedTasks proposedTasks={props.proposedTasks} />
