@@ -5,12 +5,14 @@ import { useState } from "react";
 import { ActiveTasks } from "./tasks/ActiveTasks";
 import { ProposedTasks } from "./tasks/ProposedTasks";
 import { AcceptedTasks } from "./tasks/AcceptedTasks";
+import { BigNumber } from "ethers";
 
 interface ClientProps {
     walletAddress: string;
     smartContract: Freelancer;
     proposedTasks: Array<Task>;
     acceptedTasks: Array<Task>;
+    removeAcceptedTask: (taskId: BigNumber) => void;
 }
 
 const styles = {
@@ -29,6 +31,7 @@ export function Client(props: ClientProps) {
         const taskIds = await smartContract.getTaskForClient(walletAddress);
         const tasks = await Promise.all(taskIds.map(async (taskId) => {
             const task =  await smartContract.getTask(taskId);
+            console.log(task.id.toNumber().toString() + " " + taskId)
             return new Task(task.description, Number(task.value), task.client.addr, task.freelancer.addr, task.client.vote, task.freelancer.vote, taskId)
         }))
         setTasks(tasks);
@@ -50,7 +53,7 @@ export function Client(props: ClientProps) {
 
     return (<div style={styles.container}>
         <ProposedTasks proposedTasks={props.proposedTasks} />
-        <AcceptedTasks acceptedTasks={props.acceptedTasks} smartContract={props.smartContract} />
+        <AcceptedTasks removeAcceptedTask={props.removeAcceptedTask} acceptedTasks={props.acceptedTasks} smartContract={props.smartContract} />
         <ActiveTasks smartContract={props.smartContract} isCLientView={true} activeTasks={tasks} />
     </div>)
 }

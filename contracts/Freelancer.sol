@@ -36,9 +36,10 @@ contract Freelancer {
         Status status;
         ConsensusType consensusType;
         Entity thirdParty;
+        // id of the work 
+        uint256 id;
+        bool isPopulated;
     }
-
-    uint256 private totalContracts;
 
     mapping(uint256 => Work) public contracts;
     mapping(address => uint256[]) public freelancerToContractId;
@@ -48,7 +49,6 @@ contract Freelancer {
     event transferFunds();
 
     constructor() {
-        totalContracts = 0;
     }
 
     modifier onlyFreelancer(uint256 _id) {
@@ -82,35 +82,59 @@ contract Freelancer {
         _;
     }
 
-    function fundWork(string memory _description, uint256 _value, address payable _freelancer) 
+    modifier isAnUnusedId(uint256 _id) {
+        require(!contracts[_id].isPopulated, "Task id has already been used");
+        _;
+    }
+
+    function fundWork(uint256 _id, string memory _description, uint256 _value, address payable _freelancer) 
         public
         payable
         sufficientFunds(_value, msg.value)
+        isAnUnusedId(_id)
     {
         Entity memory entityFreelancer = Entity(_freelancer, Vote.undecided);
         Entity memory entityClient = Entity(payable(msg.sender), Vote.undecided); 
-        contracts[totalContracts] = Work(entityFreelancer, entityClient, _description, _value, Status.funded, ConsensusType.unanimous_vote, Entity(payable(0), Vote.undecided));
-        freelancerToContractId[_freelancer].push(totalContracts);
-        clientToContractId[msg.sender].push(totalContracts);
+        contracts[_id] = Work(
+            entityFreelancer, 
+            entityClient, 
+            _description, 
+            _value, 
+            Status.funded, 
+            ConsensusType.unanimous_vote, 
+            Entity(payable(0), Vote.undecided), 
+            _id, 
+            true);
+        freelancerToContractId[_freelancer].push(_id);
+        clientToContractId[msg.sender].push(_id);
 
-        emit workFunded(contracts[totalContracts]);
-        totalContracts++;
+        emit workFunded(contracts[_id]);
     }
 
-    function fundWorkWithThirdParty(string memory _description, uint256 _value, address payable _freelancer, address payable _thirdParty) 
+    function fundWorkWithThirdParty(uint256 _id, string memory _description, uint256 _value, address payable _freelancer, address payable _thirdParty) 
         public
         payable
         sufficientFunds(_value, msg.value)
+        isAnUnusedId(_id)
     {
         require(_thirdParty != _freelancer && _thirdParty != msg.sender, "The client or freelancer cannot be the third party");
         Entity memory entityFreelancer = Entity(_freelancer, Vote.undecided);
         Entity memory entityClient = Entity(payable(msg.sender), Vote.undecided); 
-        contracts[totalContracts] = Work(entityFreelancer, entityClient, _description, _value, Status.funded, ConsensusType.third_party, Entity(payable(_thirdParty), Vote.undecided));
-        freelancerToContractId[_freelancer].push(totalContracts);
-        clientToContractId[msg.sender].push(totalContracts);
+        contracts[_id] = Work(
+            entityFreelancer, 
+            entityClient, 
+            _description, 
+            _value, 
+            Status.funded, 
+            ConsensusType.third_party, 
+            Entity(payable(_thirdParty), 
+            Vote.undecided), 
+            _id, 
+            true);
+        freelancerToContractId[_freelancer].push(_id);
+        clientToContractId[msg.sender].push(_id);
 
-        emit workFunded(contracts[totalContracts]);
-        totalContracts++;
+        emit workFunded(contracts[_id]);
     }
 
     function clientVote(uint256 _id, Vote vote) 

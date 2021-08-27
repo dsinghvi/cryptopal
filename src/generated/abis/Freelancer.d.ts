@@ -27,8 +27,8 @@ interface FreelancerInterface extends ethers.utils.Interface {
     "contracts(uint256)": FunctionFragment;
     "freelancerToContractId(address,uint256)": FunctionFragment;
     "freelancerVote(uint256,uint8)": FunctionFragment;
-    "fundWork(string,uint256,address)": FunctionFragment;
-    "fundWorkWithThirdParty(string,uint256,address,address)": FunctionFragment;
+    "fundWork(uint256,string,uint256,address)": FunctionFragment;
+    "fundWorkWithThirdParty(uint256,string,uint256,address,address)": FunctionFragment;
     "getTask(uint256)": FunctionFragment;
     "getTaskForClient(address)": FunctionFragment;
     "getTaskForFreelancer(address)": FunctionFragment;
@@ -57,11 +57,11 @@ interface FreelancerInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "fundWork",
-    values: [string, BigNumberish, string]
+    values: [BigNumberish, string, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "fundWorkWithThirdParty",
-    values: [string, BigNumberish, string, string]
+    values: [BigNumberish, string, BigNumberish, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "getTask",
@@ -189,7 +189,9 @@ export class Freelancer extends BaseContract {
         BigNumber,
         number,
         number,
-        [string, number] & { addr: string; vote: number }
+        [string, number] & { addr: string; vote: number },
+        BigNumber,
+        boolean
       ] & {
         freelancer: [string, number] & { addr: string; vote: number };
         client: [string, number] & { addr: string; vote: number };
@@ -198,6 +200,8 @@ export class Freelancer extends BaseContract {
         status: number;
         consensusType: number;
         thirdParty: [string, number] & { addr: string; vote: number };
+        id: BigNumber;
+        isPopulated: boolean;
       }
     >;
 
@@ -214,6 +218,7 @@ export class Freelancer extends BaseContract {
     ): Promise<ContractTransaction>;
 
     fundWork(
+      _id: BigNumberish,
       _description: string,
       _value: BigNumberish,
       _freelancer: string,
@@ -221,6 +226,7 @@ export class Freelancer extends BaseContract {
     ): Promise<ContractTransaction>;
 
     fundWorkWithThirdParty(
+      _id: BigNumberish,
       _description: string,
       _value: BigNumberish,
       _freelancer: string,
@@ -240,7 +246,9 @@ export class Freelancer extends BaseContract {
           BigNumber,
           number,
           number,
-          [string, number] & { addr: string; vote: number }
+          [string, number] & { addr: string; vote: number },
+          BigNumber,
+          boolean
         ] & {
           freelancer: [string, number] & { addr: string; vote: number };
           client: [string, number] & { addr: string; vote: number };
@@ -249,6 +257,8 @@ export class Freelancer extends BaseContract {
           status: number;
           consensusType: number;
           thirdParty: [string, number] & { addr: string; vote: number };
+          id: BigNumber;
+          isPopulated: boolean;
         }
       ]
     >;
@@ -293,7 +303,9 @@ export class Freelancer extends BaseContract {
       BigNumber,
       number,
       number,
-      [string, number] & { addr: string; vote: number }
+      [string, number] & { addr: string; vote: number },
+      BigNumber,
+      boolean
     ] & {
       freelancer: [string, number] & { addr: string; vote: number };
       client: [string, number] & { addr: string; vote: number };
@@ -302,6 +314,8 @@ export class Freelancer extends BaseContract {
       status: number;
       consensusType: number;
       thirdParty: [string, number] & { addr: string; vote: number };
+      id: BigNumber;
+      isPopulated: boolean;
     }
   >;
 
@@ -318,6 +332,7 @@ export class Freelancer extends BaseContract {
   ): Promise<ContractTransaction>;
 
   fundWork(
+    _id: BigNumberish,
     _description: string,
     _value: BigNumberish,
     _freelancer: string,
@@ -325,6 +340,7 @@ export class Freelancer extends BaseContract {
   ): Promise<ContractTransaction>;
 
   fundWorkWithThirdParty(
+    _id: BigNumberish,
     _description: string,
     _value: BigNumberish,
     _freelancer: string,
@@ -343,7 +359,9 @@ export class Freelancer extends BaseContract {
       BigNumber,
       number,
       number,
-      [string, number] & { addr: string; vote: number }
+      [string, number] & { addr: string; vote: number },
+      BigNumber,
+      boolean
     ] & {
       freelancer: [string, number] & { addr: string; vote: number };
       client: [string, number] & { addr: string; vote: number };
@@ -352,6 +370,8 @@ export class Freelancer extends BaseContract {
       status: number;
       consensusType: number;
       thirdParty: [string, number] & { addr: string; vote: number };
+      id: BigNumber;
+      isPopulated: boolean;
     }
   >;
 
@@ -395,7 +415,9 @@ export class Freelancer extends BaseContract {
         BigNumber,
         number,
         number,
-        [string, number] & { addr: string; vote: number }
+        [string, number] & { addr: string; vote: number },
+        BigNumber,
+        boolean
       ] & {
         freelancer: [string, number] & { addr: string; vote: number };
         client: [string, number] & { addr: string; vote: number };
@@ -404,6 +426,8 @@ export class Freelancer extends BaseContract {
         status: number;
         consensusType: number;
         thirdParty: [string, number] & { addr: string; vote: number };
+        id: BigNumber;
+        isPopulated: boolean;
       }
     >;
 
@@ -420,6 +444,7 @@ export class Freelancer extends BaseContract {
     ): Promise<void>;
 
     fundWork(
+      _id: BigNumberish,
       _description: string,
       _value: BigNumberish,
       _freelancer: string,
@@ -427,6 +452,7 @@ export class Freelancer extends BaseContract {
     ): Promise<void>;
 
     fundWorkWithThirdParty(
+      _id: BigNumberish,
       _description: string,
       _value: BigNumberish,
       _freelancer: string,
@@ -445,7 +471,9 @@ export class Freelancer extends BaseContract {
         BigNumber,
         number,
         number,
-        [string, number] & { addr: string; vote: number }
+        [string, number] & { addr: string; vote: number },
+        BigNumber,
+        boolean
       ] & {
         freelancer: [string, number] & { addr: string; vote: number };
         client: [string, number] & { addr: string; vote: number };
@@ -454,6 +482,8 @@ export class Freelancer extends BaseContract {
         status: number;
         consensusType: number;
         thirdParty: [string, number] & { addr: string; vote: number };
+        id: BigNumber;
+        isPopulated: boolean;
       }
     >;
 
@@ -488,7 +518,9 @@ export class Freelancer extends BaseContract {
           BigNumber,
           number,
           number,
-          [string, number] & { addr: string; vote: number }
+          [string, number] & { addr: string; vote: number },
+          BigNumber,
+          boolean
         ] & {
           freelancer: [string, number] & { addr: string; vote: number };
           client: [string, number] & { addr: string; vote: number };
@@ -497,6 +529,8 @@ export class Freelancer extends BaseContract {
           status: number;
           consensusType: number;
           thirdParty: [string, number] & { addr: string; vote: number };
+          id: BigNumber;
+          isPopulated: boolean;
         }
       ],
       {
@@ -507,7 +541,9 @@ export class Freelancer extends BaseContract {
           BigNumber,
           number,
           number,
-          [string, number] & { addr: string; vote: number }
+          [string, number] & { addr: string; vote: number },
+          BigNumber,
+          boolean
         ] & {
           freelancer: [string, number] & { addr: string; vote: number };
           client: [string, number] & { addr: string; vote: number };
@@ -516,6 +552,8 @@ export class Freelancer extends BaseContract {
           status: number;
           consensusType: number;
           thirdParty: [string, number] & { addr: string; vote: number };
+          id: BigNumber;
+          isPopulated: boolean;
         };
       }
     >;
@@ -552,6 +590,7 @@ export class Freelancer extends BaseContract {
     ): Promise<BigNumber>;
 
     fundWork(
+      _id: BigNumberish,
       _description: string,
       _value: BigNumberish,
       _freelancer: string,
@@ -559,6 +598,7 @@ export class Freelancer extends BaseContract {
     ): Promise<BigNumber>;
 
     fundWorkWithThirdParty(
+      _id: BigNumberish,
       _description: string,
       _value: BigNumberish,
       _freelancer: string,
@@ -616,6 +656,7 @@ export class Freelancer extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     fundWork(
+      _id: BigNumberish,
       _description: string,
       _value: BigNumberish,
       _freelancer: string,
@@ -623,6 +664,7 @@ export class Freelancer extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     fundWorkWithThirdParty(
+      _id: BigNumberish,
       _description: string,
       _value: BigNumberish,
       _freelancer: string,
