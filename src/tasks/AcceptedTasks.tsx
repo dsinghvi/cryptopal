@@ -29,7 +29,12 @@ export function AcceptedTasks(props: AcceptedTaskProps) {
                             <td>
                                 <Button onClick={() => 
                                     props.smartContract
-                                    .fundWork("taskDescription", 30, "0x70997970c51812dc3a010c7d01b50e0d17dc79c8", { value: 30})
+                                    .fundWork(
+                                        acceptedTask.taskDescription, 
+                                        acceptedTask.taskPrice, 
+                                        acceptedTask.contractorWallet as string, 
+                                        { value: acceptedTask.taskPrice}
+                                    )
                                     .catch(error => console.log(error))}>
                                     Start task and stake ether!
                                 </Button> 
