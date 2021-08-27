@@ -13,12 +13,12 @@ interface ClientProps {
     acceptedTasks: Array<Task>;
 }
 
-
 const styles = {
     container: {
         margin: '40px'
     }
 }
+
 export function Client(props: ClientProps) {
     const { smartContract, walletAddress} = props;
     const [tasks, setTasks] = useState(new Array<Task>());
