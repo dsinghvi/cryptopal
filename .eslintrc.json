@@ -1,0 +1,14 @@
+{
+  "extends": ["prettier"],
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": ["error"]
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018, // Allows for the parsing of modern ECMAScript features
+    "ecmaFeatures": {
+      "jsx": true // Allows for the parsing of JSX
+    },
+    "sourceType": "module" // Allows for the use of imports
+  }
+}
