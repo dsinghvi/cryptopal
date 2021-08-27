@@ -25,21 +25,21 @@ export function Client(props: ClientProps) {
         console.log("Loading contracts from the chain. " + props.walletAddress)
         props.smartContract.getTaskForClient(props.walletAddress)
         .then(taskIds => {
-            console.log("taskIds for the client " + taskIds.length)
-            return taskIds.map(taskId => {
+            return taskIds.forEach(taskId => {
                 props.smartContract
                 .getTask(taskId)
                 .then(task => {
                     setActiveContract(prevActiveContracts => {
-                        prevActiveContracts.push(new Task(
-                            task.description,
-                            Number(task.value),
-                            task.client.addr,
-                            task.freelancer.addr,
-                            task.client.vote,
-                            task.freelancer.vote, 
-                            taskId))
-                        return prevActiveContracts;
+                        return [
+                            new Task(
+                                task.description,
+                                Number(task.value),
+                                task.client.addr,
+                                task.freelancer.addr,
+                                task.client.vote,
+                                task.freelancer.vote, 
+                                taskId), 
+                            ...prevActiveContracts]    
                     });
                     setLoaded(true);
                     setLoading(false);
