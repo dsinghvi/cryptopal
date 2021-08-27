@@ -22,10 +22,10 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface FreelancerInterface extends ethers.utils.Interface {
   functions: {
-    "clientToContractId(address)": FunctionFragment;
+    "clientToContractId(address,uint256)": FunctionFragment;
     "clientVote(uint256,uint8)": FunctionFragment;
     "contracts(uint256)": FunctionFragment;
-    "freelancerToContractId(address)": FunctionFragment;
+    "freelancerToContractId(address,uint256)": FunctionFragment;
     "freelancerVote(uint256,uint8)": FunctionFragment;
     "fundWork(string,uint256,address)": FunctionFragment;
     "fundWorkWithThirdParty(string,uint256,address,address)": FunctionFragment;
@@ -37,7 +37,7 @@ interface FreelancerInterface extends ethers.utils.Interface {
 
   encodeFunctionData(
     functionFragment: "clientToContractId",
-    values: [string]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "clientVote",
@@ -49,7 +49,7 @@ interface FreelancerInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "freelancerToContractId",
-    values: [string]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "freelancerVote",
@@ -168,6 +168,7 @@ export class Freelancer extends BaseContract {
   functions: {
     clientToContractId(
       arg0: string,
+      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -202,6 +203,7 @@ export class Freelancer extends BaseContract {
 
     freelancerToContractId(
       arg0: string,
+      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -254,12 +256,12 @@ export class Freelancer extends BaseContract {
     getTaskForClient(
       _address: string,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[BigNumber[]]>;
 
     getTaskForFreelancer(
       _address: string,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[BigNumber[]]>;
 
     thirdPartyVote(
       _id: BigNumberish,
@@ -270,6 +272,7 @@ export class Freelancer extends BaseContract {
 
   clientToContractId(
     arg0: string,
+    arg1: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -304,6 +307,7 @@ export class Freelancer extends BaseContract {
 
   freelancerToContractId(
     arg0: string,
+    arg1: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -354,12 +358,12 @@ export class Freelancer extends BaseContract {
   getTaskForClient(
     _address: string,
     overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  ): Promise<BigNumber[]>;
 
   getTaskForFreelancer(
     _address: string,
     overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  ): Promise<BigNumber[]>;
 
   thirdPartyVote(
     _id: BigNumberish,
@@ -370,6 +374,7 @@ export class Freelancer extends BaseContract {
   callStatic: {
     clientToContractId(
       arg0: string,
+      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -404,6 +409,7 @@ export class Freelancer extends BaseContract {
 
     freelancerToContractId(
       arg0: string,
+      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -454,12 +460,12 @@ export class Freelancer extends BaseContract {
     getTaskForClient(
       _address: string,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber[]>;
 
     getTaskForFreelancer(
       _address: string,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber[]>;
 
     thirdPartyVote(
       _id: BigNumberish,
@@ -518,6 +524,7 @@ export class Freelancer extends BaseContract {
   estimateGas: {
     clientToContractId(
       arg0: string,
+      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -534,6 +541,7 @@ export class Freelancer extends BaseContract {
 
     freelancerToContractId(
       arg0: string,
+      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -580,6 +588,7 @@ export class Freelancer extends BaseContract {
   populateTransaction: {
     clientToContractId(
       arg0: string,
+      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -596,6 +605,7 @@ export class Freelancer extends BaseContract {
 
     freelancerToContractId(
       arg0: string,
+      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
