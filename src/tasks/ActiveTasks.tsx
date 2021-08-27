@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button, HTMLTable, Intent } from "@blueprintjs/core";
 import { Task, TaskVote } from "../App";
 import { Freelancer } from "../generated/abis";
@@ -9,7 +10,14 @@ interface ActiveTaskProps {
     smartContract: Freelancer;
 }
 
+const styles = {
+    buttonMargin: {
+        marginRight: '10px',
+    }
+}
+
 export function ActiveTasks(props: ActiveTaskProps) {
+    const { activeTasks } = props;
     return (
         <div>
             <h4>Active Tasks</h4>
@@ -24,7 +32,7 @@ export function ActiveTasks(props: ActiveTaskProps) {
                     </tr>
                 </thead>
                 <tbody>
-                    {props.activeTasks.map(activeTask => {
+                    {activeTasks &&  activeTasks.map(activeTask => {
                         return (
                             <tr>
                                 <td>{activeTask.taskDescription}</td>
@@ -55,14 +63,15 @@ function renderVoteCell(props: ActiveTaskProps, task: Task) {
         return (
             <td>
                 <Button 
+                    style={styles.buttonMargin}
                     intent={Intent.SUCCESS} 
                     onClick={() => castApproval(props.isCLientView, props.smartContract, task)}>
-                    Approve!
+                    Approve
                 </Button> 
                 <Button
                     intent={Intent.DANGER} 
                     onClick={() => castDeclined(props.isCLientView, props.smartContract, task)}>
-                    Deny!
+                    Deny
                 </Button> 
             </td>
         );
