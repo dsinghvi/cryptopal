@@ -12,6 +12,7 @@ interface ClientProps {
     smartContract: Freelancer;
     proposedTasks: Array<Task>;
     acceptedTasks: Array<Task>;
+    removeAcceptedTask: (taskId: BigNumber) => void;
 }
 
 const styles = {
@@ -30,6 +31,7 @@ export function Client(props: ClientProps) {
         const taskIds = await smartContract.getTaskForClient(walletAddress);
         const tasks = await Promise.all(taskIds.map(async (taskId) => {
             const task =  await smartContract.getTask(taskId);
+            console.log(task.id.toNumber().toString() + " " + taskId)
             return new Task(task.description, Number(task.value), task.client.addr, task.freelancer.addr, task.client.vote, task.freelancer.vote, taskId)
         }))
         setTasks(tasks);
@@ -49,31 +51,9 @@ export function Client(props: ClientProps) {
         }
     }, [pollData, pollDataInterval]);
 
-    smartContract.on("workFunded", (task: 
-    // Copy paste this type from the generated typescript bindings
-      [
-        [string, number] & { addr: string; vote: number },
-        [string, number] & { addr: string; vote: number },
-        string,
-        BigNumber,
-        number,
-        number,
-        [string, number] & { addr: string; vote: number }
-      ] & {
-        freelancer: [string, number] & { addr: string; vote: number };
-        client: [string, number] & { addr: string; vote: number };
-        description: string;
-        value: BigNumber;
-        status: number;
-        consensusType: number;
-        thirdParty: [string, number] & { addr: string; vote: number };
-      }) => {
-        console.log("task was funded" + task.description)
-    })
-
     return (<div style={styles.container}>
         <ProposedTasks proposedTasks={props.proposedTasks} />
-        <AcceptedTasks acceptedTasks={props.acceptedTasks} smartContract={props.smartContract} />
+        <AcceptedTasks removeAcceptedTask={props.removeAcceptedTask} acceptedTasks={props.acceptedTasks} smartContract={props.smartContract} />
         <ActiveTasks smartContract={props.smartContract} isCLientView={true} activeTasks={tasks} />
     </div>)
 }
