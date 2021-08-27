@@ -6,6 +6,7 @@ import { useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import { Client } from "./Client";
 import { ConnectWallet } from './ConnectWallet';
+import { Contractor } from './Contractor';
 
 declare global {
   interface Window {
@@ -67,7 +68,18 @@ function App() {
   if (walletAddr === "") {
     return <ConnectWallet setWalletAddress={walletAddress => setWalletAddr(walletAddress)}/>
   } else {
-    return <Client walletAddress={walletAddr} smartContract={freelancerSmartContract} proposedTasks={proposedTasks} acceptedTasks={acceptedTasks}></Client>
+    return (
+      <div>
+        <div>
+          <h1>Client View</h1>
+          <Client walletAddress={walletAddr} smartContract={freelancerSmartContract} proposedTasks={proposedTasks} acceptedTasks={acceptedTasks}></Client>
+        </div>
+        <div>
+          <h1>Freelancer View</h1>
+          <Contractor walletAddress={walletAddr} smartContract={freelancerSmartContract} proposedTasks={proposedTasks}></Contractor>
+        </div>
+      </div>
+    )
   }
 }
 

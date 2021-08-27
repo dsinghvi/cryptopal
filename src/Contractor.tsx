@@ -6,11 +6,10 @@ import { ActiveTasks } from "./tasks/ActiveTasks";
 import { ProposedTasks } from "./tasks/ProposedTasks";
 import { AcceptedTasks } from "./tasks/AcceptedTasks";
 
-interface ClientProps {
+interface ContractorProps {
     walletAddress: string;
     smartContract: Freelancer;
     proposedTasks: Array<Task>;
-    acceptedTasks: Array<Task>;
 }
 
 const styles = {
@@ -19,14 +18,14 @@ const styles = {
     }
 }
 
-export function Client(props: ClientProps) {
+export function Contractor(props: ContractorProps) {
     const { smartContract, walletAddress} = props;
     const [tasks, setTasks] = useState(new Array<Task>());
     const [pollData, setPollData] = React.useState(false);
     const [pollDataInterval, setPollDataInterval] = React.useState<NodeJS.Timeout>();
   
     const fetchTasks = React.useCallback(async () => {
-        const taskIds = await smartContract.getTaskForClient(walletAddress);
+        const taskIds = await smartContract.getTaskForFreelancer(walletAddress);
         const tasks = await Promise.all(taskIds.map(async (taskId) => {
             const task =  await smartContract.getTask(taskId);
             return new Task(task.description, Number(task.value), task.client.addr, task.freelancer.addr, task.client.vote, task.freelancer.vote, taskId)
@@ -49,8 +48,7 @@ export function Client(props: ClientProps) {
     }, [pollData, pollDataInterval]);
 
     return (<div style={styles.container}>
-        <ProposedTasks isClientView={true} proposedTasks={props.proposedTasks} />
-        <AcceptedTasks acceptedTasks={props.acceptedTasks} smartContract={props.smartContract} />
-        <ActiveTasks smartContract={props.smartContract} isCLientView={true} activeTasks={tasks} />
+        <ProposedTasks isClientView={false} proposedTasks={props.proposedTasks} />
+        <ActiveTasks isCLientView={false} smartContract={props.smartContract}  activeTasks={tasks} />
     </div>)
 }
