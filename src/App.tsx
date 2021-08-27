@@ -54,14 +54,14 @@ function App() {
   const [freelancerSmartContract] = useState(Freelancer__factory.connect(CONTRACT_ADDR, provider.getSigner(0)));
   const [walletAddr, setWalletAddr] = useState("");
   const [proposedTasks, setProposedTasks] = useState([
-    new Task("Build your first dApp", 1, walletAddr, "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"),
-    new Task("Build your second dApp", 2, walletAddr, "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"),
-    new Task("Build your third dApp", 3, walletAddr, "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")
+    new Task("Build your first dApp", 1, walletAddr, "0xbda5747bfd65f08deb54cb465eb87d40e51b197e"),
+    new Task("Build your second dApp", 2, walletAddr, "0xbda5747bfd65f08deb54cb465eb87d40e51b197e"),
+    new Task("Build your third dApp", 3, walletAddr, "0xbda5747bfd65f08deb54cb465eb87d40e51b197e")
   ])
   const [acceptedTasks, setAcceptedTasks] = useState([
-    new Task("Integrate my app with polygon", 1, walletAddr, "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"),
-    new Task("Mint 400 NFTs", 2, walletAddr, "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"),
-    new Task("Win 10 races on my zed run account", 3, walletAddr, "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")
+    new Task("Integrate my app with polygon", 1, walletAddr, "0xbda5747bfd65f08deb54cb465eb87d40e51b197e"),
+    new Task("Mint 400 NFTs", 2, walletAddr, "0xbda5747bfd65f08deb54cb465eb87d40e51b197e"),
+    new Task("Win 10 races on my zed run account", 3, walletAddr, "0xbda5747bfd65f08deb54cb465eb87d40e51b197e")
   ])
 
   if (walletAddr === "") {

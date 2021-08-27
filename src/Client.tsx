@@ -24,8 +24,9 @@ export function Client(props: ClientProps) {
         setLoading(true);
         console.log("Loading contracts from the chain. " + props.walletAddress)
         props.smartContract.getTaskForClient(props.walletAddress)
-        .then(taskIds => 
-            taskIds.map(taskId => {
+        .then(taskIds => {
+            console.log("taskIds for the client " + taskIds.length)
+            return taskIds.map(taskId => {
                 props.smartContract
                 .getTask(taskId)
                 .then(task => {
@@ -46,7 +47,8 @@ export function Client(props: ClientProps) {
                 .catch(error => {
                     console.log(error);
                 });
-            }))
+            })
+        })
         .catch(error => {
             console.log(error);
         })
