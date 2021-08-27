@@ -7,12 +7,14 @@ import { useState } from "react";
 import { ActiveTasks } from "./tasks/ActiveTasks";
 import { ProposedTasks } from "./tasks/ProposedTasks";
 import { AcceptedTasks } from "./tasks/AcceptedTasks";
+import { BigNumber } from "ethers";
 
 interface ClientProps {
     walletAddress: string;
     smartContract: Freelancer;
     proposedTasks: Array<Task>;
     acceptedTasks: Array<Task>;
+    removeProposedTask: (taskId: BigNumber) => void;
 }
 
 export function Client(props: ClientProps) {
@@ -26,20 +28,21 @@ export function Client(props: ClientProps) {
         props.smartContract.getTaskForClient(props.walletAddress)
         .then(taskIds => {
             console.log("taskIds for the client " + taskIds.length)
-            return taskIds.map(taskId => {
+            taskIds.forEach(taskId => {
                 props.smartContract
                 .getTask(taskId)
                 .then(task => {
                     setActiveContract(prevActiveContracts => {
-                        prevActiveContracts.push(new Task(
-                            task.description,
-                            Number(task.value),
-                            task.client.addr,
-                            task.freelancer.addr,
-                            task.client.vote,
-                            task.freelancer.vote, 
-                            taskId))
-                        return prevActiveContracts;
+                        return [
+                            new Task(
+                                task.description,
+                                Number(task.value),
+                                task.client.addr,
+                                task.freelancer.addr,
+                                task.client.vote,
+                                task.freelancer.vote, 
+                                taskId), 
+                            ...prevActiveContracts]    
                     });
                     setLoaded(true);
                     setLoading(false);
@@ -54,9 +57,18 @@ export function Client(props: ClientProps) {
         })
     }
 
+    console.log(activeContracts)
+    console.log(activeContracts)
+
     return (<div>
         <ProposedTasks proposedTasks={props.proposedTasks} />
-        <AcceptedTasks acceptedTasks={props.acceptedTasks} smartContract={props.smartContract} />
-        <ActiveTasks smartContract={props.smartContract} isCLientView={true} activeTasks={activeContracts} />
+        <AcceptedTasks 
+            acceptedTasks={props.acceptedTasks}
+            smartContract={props.smartContract}
+            removeProposedTask={props.removeProposedTask}/>
+        <ActiveTasks 
+            isCLientView={true} 
+            smartContract={props.smartContract} 
+            activeTasks={activeContracts} />
     </div>)
 }

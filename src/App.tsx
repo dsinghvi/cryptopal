@@ -35,10 +35,10 @@ export class Task {
     this.contractorWallet = contractorWallet;
     this.clientVote = (clientVote !== undefined) ? clientVote : TaskVote.Undecided;
     this.contractorVote = (contractorVote !== undefined) ? contractorVote : TaskVote.Undecided;
-    this.taskId = taskId;
+    this.taskId = (taskId !== undefined) ? taskId : BigNumber.from(getRandomInt(1, 1000000));
   }
 
-  taskId?: BigNumber;
+  taskId: BigNumber;
   taskPrice: number;
   taskDescription: string;
   clientWallet: string;
@@ -47,6 +47,10 @@ export class Task {
   clientVote: TaskVote;
   contractorVote: TaskVote;
 
+}
+
+function getRandomInt(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min)) + min;
 }
 
 function App() {
@@ -67,7 +71,19 @@ function App() {
   if (walletAddr === "") {
     return <ConnectWallet setWalletAddress={walletAddress => setWalletAddr(walletAddress)}/>
   } else {
-    return <Client walletAddress={walletAddr} smartContract={freelancerSmartContract} proposedTasks={proposedTasks} acceptedTasks={acceptedTasks}></Client>
+    return (
+    <Client 
+      walletAddress={walletAddr}
+      smartContract={freelancerSmartContract}
+      proposedTasks={proposedTasks}
+      acceptedTasks={acceptedTasks}
+      removeProposedTask={(taskId: BigNumber) => {
+        setProposedTasks(prevProposedTasks => {
+          let filteredTasks = prevProposedTasks.filter(task => task.taskId !== taskId);
+          return [...filteredTasks];
+        })
+      }}
+    />);
   }
 }
 
