@@ -24,17 +24,29 @@ export function Client(props: ClientProps) {
         setLoading(true);
         console.log("Loading contracts from the chain. " + props.walletAddress)
         props.smartContract.getTaskForClient(props.walletAddress)
-        .then(taskId => 
-            props.smartContract
+        .then(taskIds => 
+            taskIds.map(taskId => {
+                props.smartContract
                 .getTask(taskId)
                 .then(task => {
-                    setActiveContract([new Task(task.description, Number(task.value), task.client.addr, task.freelancer.addr, task.client.vote, task.freelancer.vote, taskId)]);
+                    setActiveContract(prevActiveContracts => {
+                        prevActiveContracts.push(new Task(
+                            task.description,
+                            Number(task.value),
+                            task.client.addr,
+                            task.freelancer.addr,
+                            task.client.vote,
+                            task.freelancer.vote, 
+                            taskId))
+                        return prevActiveContracts;
+                    });
                     setLoaded(true);
                     setLoading(false);
                 })
                 .catch(error => {
                     console.log(error);
-                }))
+                });
+            }))
         .catch(error => {
             console.log(error);
         })
