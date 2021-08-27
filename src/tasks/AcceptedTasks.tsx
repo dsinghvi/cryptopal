@@ -1,4 +1,5 @@
-import { Button, HTMLTable } from "@blueprintjs/core";
+import React from 'react';
+import { Button, HTMLTable, Intent } from "@blueprintjs/core";
 import { Task } from "../App";
 import { Freelancer } from "../generated/abis";
 
@@ -9,6 +10,7 @@ interface AcceptedTaskProps {
 }
 
 export function AcceptedTasks(props: AcceptedTaskProps) {
+    const { acceptedTasks } = props;
     return (
         <div>
             <h4>Accepted Tasks</h4>
@@ -21,13 +23,15 @@ export function AcceptedTasks(props: AcceptedTaskProps) {
                     </tr>
                 </thead>
                 <tbody>
-                    {props.acceptedTasks.map(acceptedTask => 
+                    {acceptedTasks && acceptedTasks.map(acceptedTask => 
                         <tr>
                             <td>{acceptedTask.taskDescription}</td>
                             <td>{acceptedTask.taskPrice}</td>
                             <td>{acceptedTask.contractorWallet}</td>
                             <td>
-                                <Button onClick={() => 
+                                <Button 
+                                    intent={Intent.PRIMARY} 
+                                    onClick={() => 
                                     props.smartContract
                                     .fundWork(
                                         acceptedTask.taskDescription, 
@@ -36,7 +40,7 @@ export function AcceptedTasks(props: AcceptedTaskProps) {
                                         { value: acceptedTask.taskPrice}
                                     )
                                     .catch(error => console.log(error))}>
-                                    Start task and stake ether!
+                                    Fund task
                                 </Button> 
                             </td>
                         </tr>
