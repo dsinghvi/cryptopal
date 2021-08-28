@@ -3,7 +3,9 @@ import { Button, HTMLTable, Intent } from '@blueprintjs/core';
 import { Task } from '../Task';
 import { Freelancer } from '../generated/abis';
 import { Link } from 'react-router-dom';
+import { Typography } from 'antd';
 
+const { Title } = Typography;
 interface AcceptedTaskProps {
   acceptedTasks: Array<Task>;
   smartContract: Freelancer;
@@ -36,7 +38,7 @@ export function AcceptedTasks(props: AcceptedTaskProps) {
   }, []);
   return (
     <div>
-      <h4>Accepted Tasks</h4>
+      <Title style={{ marginTop: '20px' }}>Accepted Tasks</Title>
       <HTMLTable bordered={true} interactive={true} striped={true}>
         <thead>
           <tr>
