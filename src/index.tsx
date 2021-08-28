@@ -5,13 +5,12 @@ import reportWebVitals from './reportWebVitals';
 import { FreeLancerView } from './FreeLancerView';
 import { Freelancer, Freelancer__factory } from './generated/abis';
 import { CONTRACT_ADDR } from './ContractAddress';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { ClientView } from './ClientView';
 import useProposedTasks from './hooks/useProposedTasks';
 import useAcceptedTasks from './hooks/useAcceptedTasks';
 import './App.css';
 import { ConnectWallet } from './ConnectWallet';
-import { BigNumber } from 'ethers';
 
 import {
   Route,
@@ -19,6 +18,8 @@ import {
   Switch,
   Redirect,
 } from 'react-router-dom';
+import deleteAcceptedTask from './hooks/deleteAcceptedTask';
+import { Task } from './Task';
 
 const Controller = () => {
   //@ts-ignore
@@ -40,7 +41,19 @@ const Controller = () => {
 
   const [walletAddr, setWalletAddr] = useState('');
   const proposedTasks = useProposedTasks(walletAddr);
-  const acceptedTasks = useAcceptedTasks(walletAddr);
+  const initAcceptedTasks = useAcceptedTasks(walletAddr);
+  let [acceptedTasks, setAcceptedTasks] = useState(initAcceptedTasks)
+
+  if (freelancerSmartContract !== undefined) {
+    freelancerSmartContract.on("workFunded", (contractTask: any) => {
+      setAcceptedTasks(prevAcceptedTasks => {
+        let filteredTasks = [
+          ...prevAcceptedTasks.filter(task => !task.taskId.eq(contractTask.id))
+        ];
+        return filteredTasks;
+      })
+    })
+  }
 
   if (walletAddr === '') {
     return (

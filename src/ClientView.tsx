@@ -12,7 +12,7 @@ interface ClientProps {
   walletAddress: string;
   smartContract: Freelancer;
   proposedTasks: Array<Task>;
-  acceptedTasks: Array<Task>;
+  acceptedTasks: Task[];
 }
 
 const styles = {
