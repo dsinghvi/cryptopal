@@ -41,7 +41,11 @@ const Controller = () => {
 
   const [walletAddr, setWalletAddr] = useState('');
   const proposedTasks = useProposedTasks(walletAddr);
-  let acceptedTasks, setAcceptedTasks = useState(getAcceptedTasks(walletAddr));
+  const acceptedTasks = useAcceptedTasks(walletAddr);
+
+  if (freelancerSmartContract !== undefined) {
+    setupFundTaskListener(freelancerSmartContract);
+  }
 
   if (walletAddr === '') {
     return (
@@ -87,11 +91,12 @@ ReactDOM.render(
   document.getElementById('root'),
 );
 
-function removeAcceptedTask(taskId: BigNumber, setAcceptedTasks: React.Dispatch<React.SetStateAction<Task[]>>) {
-  console.log("removeAcceptedTask called with " + taskId)
-  setAcceptedTasks(prevAcceptedTasks => {
-    const filteredTasks = prevAcceptedTasks.filter(task => !task.taskId.eq(taskId));
-    return [...filteredTasks]
+function setupFundTaskListener(smartContract: Freelancer) {
+  smartContract.on("workFunded", (contractTask: any) => {
+      // setAcceptedTasks(prevAcceptedTasks => {
+      //   const filteredTasks = prevAcceptedTasks.filter(task => !task.taskId.eq(taskId));
+      //   return [...filteredTasks]
+      // })
   })
 }
 
