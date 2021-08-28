@@ -33,5 +33,11 @@ if (NETWORK === TEST_NETWORK) {
 
 module.exports = {
   solidity: "0.8.0",
-  networks: networks
+  networks: networks,
+  settings: {
+    optimizer: {
+      enabled: true,
+      runs: 1
+    }
+  }
 };
