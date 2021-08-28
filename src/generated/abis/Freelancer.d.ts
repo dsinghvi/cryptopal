@@ -29,6 +29,7 @@ interface FreelancerInterface extends ethers.utils.Interface {
     "freelancerVote(uint256,uint8)": FunctionFragment;
     "fundWork(uint256,string,uint256,address)": FunctionFragment;
     "fundWorkWithThirdParty(uint256,string,uint256,address,address)": FunctionFragment;
+    "getBalance()": FunctionFragment;
     "getTask(uint256)": FunctionFragment;
     "getTaskForClient(address)": FunctionFragment;
     "getTaskForFreelancer(address)": FunctionFragment;
@@ -62,6 +63,10 @@ interface FreelancerInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "fundWorkWithThirdParty",
     values: [BigNumberish, string, BigNumberish, string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBalance",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getTask",
@@ -99,6 +104,7 @@ interface FreelancerInterface extends ethers.utils.Interface {
     functionFragment: "fundWorkWithThirdParty",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getBalance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getTask", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getTaskForClient",
@@ -234,6 +240,8 @@ export class Freelancer extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    getBalance(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     getTask(
       _id: BigNumberish,
       overrides?: CallOverrides
@@ -348,6 +356,8 @@ export class Freelancer extends BaseContract {
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  getBalance(overrides?: CallOverrides): Promise<BigNumber>;
+
   getTask(
     _id: BigNumberish,
     overrides?: CallOverrides
@@ -459,6 +469,8 @@ export class Freelancer extends BaseContract {
       _thirdParty: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    getBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
     getTask(
       _id: BigNumberish,
@@ -606,6 +618,8 @@ export class Freelancer extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    getBalance(overrides?: CallOverrides): Promise<BigNumber>;
+
     getTask(_id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     getTaskForClient(
@@ -671,6 +685,8 @@ export class Freelancer extends BaseContract {
       _thirdParty: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    getBalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getTask(
       _id: BigNumberish,
