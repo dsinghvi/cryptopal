@@ -11,7 +11,6 @@ import useProposedTasks from './hooks/useProposedTasks';
 import useAcceptedTasks from './hooks/useAcceptedTasks';
 import './App.css';
 import { ConnectWallet } from './ConnectWallet';
-import { BigNumber } from 'ethers';
 
 import {
   Route,
