@@ -7,7 +7,6 @@ import { BigNumber } from 'ethers';
 interface AcceptedTaskProps {
   acceptedTasks: Array<Task>;
   smartContract: Freelancer;
-  removeAcceptedTask: (taskId: BigNumber) => void;
 }
 
 export function AcceptedTasks(props: AcceptedTaskProps) {

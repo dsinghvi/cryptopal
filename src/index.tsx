@@ -45,7 +45,9 @@ const Controller = () => {
   let acceptedTasks = useAcceptedTasks(walletAddr);
 
   if (freelancerSmartContract !== undefined) {
-    setupFundTaskListener(freelancerSmartContract);
+    freelancerSmartContract.on("workFunded", (contractTask: any) => {
+      acceptedTasks = deleteAcceptedTask(acceptedTasks, contractTask.id);
+    })
   }
 
   if (walletAddr === '') {
@@ -69,9 +71,6 @@ const Controller = () => {
             smartContract={freelancerSmartContract}
             proposedTasks={proposedTasks}
             acceptedTasks={acceptedTasks}
-            removeAcceptedTask={taskId => {
-              acceptedTasks = deleteAcceptedTask(acceptedTasks, taskId);
-            }}
           />
         </Route>
         <Route path="/:address">
@@ -93,15 +92,6 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root'),
 );
-
-function setupFundTaskListener(smartContract: Freelancer) {
-  smartContract.on("workFunded", (contractTask: any) => {
-      // setAcceptedTasks(prevAcceptedTasks => {
-      //   const filteredTasks = prevAcceptedTasks.filter(task => !task.taskId.eq(taskId));
-      //   return [...filteredTasks]
-      // })
-  })
-}
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

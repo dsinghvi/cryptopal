@@ -12,7 +12,6 @@ interface ClientProps {
   smartContract: Freelancer;
   proposedTasks: Array<Task>;
   acceptedTasks: Task[];
-  removeAcceptedTask: (taskId: BigNumber) => void;
 }
 
 const styles = {
@@ -80,7 +79,6 @@ export function ClientView(props: ClientProps) {
       <AcceptedTasks
         acceptedTasks={acceptedTasks}
         smartContract={smartContract}
-        removeAcceptedTask={props.removeAcceptedTask}
       />
       <ActiveTasks
         smartContract={smartContract}
