@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract Freelancer {
+import "./Rewards.sol";
+
+contract Freelancer is Rewards {
     /* 
     *   1. Clients propose work.
     *   2. Freelancers accept work, and propose a plan of work.
@@ -23,6 +25,7 @@ contract Freelancer {
         // You can use .transfer(...) and .send(...) on address payable, but not address.
         address payable addr;
         Vote vote;
+        uint256[] certificates;
     }
 
     struct Work {
@@ -46,23 +49,28 @@ contract Freelancer {
 
     event workFunded(Work work);
     event transferFunds();
+    event NFTMinted(uint256 _id, string URI);
+
+    Entity private entityFreelancer;
+    Entity private entityClient; 
+    Entity private entityThirdParty;
 
     constructor() {
         totalContracts = 0;
     }
 
     modifier onlyFreelancer(uint256 _id) {
-        require(msg.sender == contracts[_id].freelancer.addr, "Only freelancer can call this flow.");
+        require(msg.sender == contracts[_id].freelancer.addr, "err");//"Only freelancer can call this flow.");
         _;
     }
 
     modifier onlyClient(uint256 _id) {
-        require(msg.sender == contracts[_id].client.addr, "Only client can call this flow");
+        require(msg.sender == contracts[_id].client.addr, "err");//"Only client can call this flow");
         _;
     }
 
     modifier onlyThirdParty(uint256 _id) {
-        require(msg.sender == contracts[_id].thirdParty.addr, "Only appointed third party can call this flow");
+        require(msg.sender == contracts[_id].thirdParty.addr, "err");//"Only appointed third party can call this flow");
         _;
     }
 
@@ -78,7 +86,7 @@ contract Freelancer {
 
     // "_" differentiates between function arguments and global variables
     modifier sufficientFunds(uint256 _value, uint256 _payment) {
-        require(_payment == _value, "Funds are not equal to approved amount.");
+        require(_payment == _value, "err");//"Funds are not equal to approved amount.");
         _;
     }
 
@@ -87,9 +95,13 @@ contract Freelancer {
         payable
         sufficientFunds(_value, msg.value)
     {
-        Entity memory entityFreelancer = Entity(_freelancer, Vote.undecided);
-        Entity memory entityClient = Entity(payable(msg.sender), Vote.undecided); 
-        contracts[totalContracts] = Work(entityFreelancer, entityClient, _description, _value, Status.funded, ConsensusType.unanimous_vote, Entity(payable(0), Vote.undecided));
+    //     Entity memory entityFreelancer = Entity(_freelancer, Vote.undecided);
+    //     Entity memory entityClient = Entity(payable(msg.sender), Vote.undecided); 
+        initEntity(entityFreelancer, _freelancer, Vote.undecided);
+        initEntity(entityClient, msg.sender, Vote.undecided);
+        initEntity(entityThirdParty, payable(0), Vote.undecided);
+
+        contracts[totalContracts] = Work(entityFreelancer, entityClient, _description, _value, Status.funded, ConsensusType.unanimous_vote, entityThirdParty);
         freelancerToContractId[_freelancer].push(totalContracts);
         clientToContractId[msg.sender].push(totalContracts);
 
@@ -97,15 +109,24 @@ contract Freelancer {
         totalContracts++;
     }
 
+    function initEntity(Entity memory entity, address addr, Vote vote) public payable {
+        entity.addr = payable(addr);
+        entity.vote = vote;
+    }
+
     function fundWorkWithThirdParty(string memory _description, uint256 _value, address payable _freelancer, address payable _thirdParty) 
         public
         payable
         sufficientFunds(_value, msg.value)
     {
-        require(_thirdParty != _freelancer && _thirdParty != msg.sender, "The client or freelancer cannot be the third party");
-        Entity memory entityFreelancer = Entity(_freelancer, Vote.undecided);
-        Entity memory entityClient = Entity(payable(msg.sender), Vote.undecided); 
-        contracts[totalContracts] = Work(entityFreelancer, entityClient, _description, _value, Status.funded, ConsensusType.third_party, Entity(payable(_thirdParty), Vote.undecided));
+        require(_thirdParty != _freelancer && _thirdParty != msg.sender, "err");//"The client or freelancer cannot be the third party");
+        
+        initEntity(entityFreelancer, _freelancer, Vote.undecided);
+        initEntity(entityClient, msg.sender, Vote.undecided);
+        initEntity(entityThirdParty, _thirdParty, Vote.undecided);
+        // Entity memory entityFreelancer = Entity(_freelancer, Vote.undecided);
+        // Entity memory entityClient = Entity(payable(msg.sender), Vote.undecided); 
+        contracts[totalContracts] = Work(entityFreelancer, entityClient, _description, _value, Status.funded, ConsensusType.third_party, entityThirdParty);
         freelancerToContractId[_freelancer].push(totalContracts);
         clientToContractId[msg.sender].push(totalContracts);
 
@@ -124,6 +145,12 @@ contract Freelancer {
         if (agreement.client.vote == Vote.approved) {
             agreement.freelancer.addr.transfer(agreement.value);
             emit transferFunds();
+
+            // mint NFT and reward it to the contractor
+            uint256 tokenID = mintNft(agreement.freelancer.addr, "https://ipfs.io/ipfs/QmR1Z9Bd2WcfB6JCsjUYvXJcEZMvfp7Pdft99NyZCjjEeG?filename=Mona_Lisa.jpeg");
+            contracts[_id].freelancer.certificates.push(tokenID);    
+            emit NFTMinted(_id, tokenURI(tokenID));
+        
         } else if (agreement.client.vote == Vote.declined && agreement.freelancer.vote == Vote.declined) {
             agreement.client.addr.transfer(agreement.value);
             emit transferFunds();
