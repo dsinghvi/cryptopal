@@ -20,6 +20,7 @@ import {
 } from 'react-router-dom';
 import { Task } from './Task';
 import getAcceptedTasks from './hooks/useAcceptedTasks';
+import deleteAcceptedTask from './hooks/deleteAcceptedTask';
 
 const Controller = () => {
   //@ts-ignore
@@ -41,7 +42,7 @@ const Controller = () => {
 
   const [walletAddr, setWalletAddr] = useState('');
   const proposedTasks = useProposedTasks(walletAddr);
-  const acceptedTasks = useAcceptedTasks(walletAddr);
+  let acceptedTasks = useAcceptedTasks(walletAddr);
 
   if (freelancerSmartContract !== undefined) {
     setupFundTaskListener(freelancerSmartContract);
@@ -68,7 +69,9 @@ const Controller = () => {
             smartContract={freelancerSmartContract}
             proposedTasks={proposedTasks}
             acceptedTasks={acceptedTasks}
-            removeAcceptedTask={taskId => removeAcceptedTask(taskId, setAcceptedTasks)}
+            removeAcceptedTask={taskId => {
+              acceptedTasks = deleteAcceptedTask(acceptedTasks, taskId);
+            }}
           />
         </Route>
         <Route path="/:address">
