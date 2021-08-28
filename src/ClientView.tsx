@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { Freelancer } from './generated/abis';
 import { useState } from 'react';
 import { ActiveTasks } from './tasks/ActiveTasks';
@@ -6,6 +6,7 @@ import { ProposedTasks } from './tasks/ProposedTasks';
 import { AcceptedTasks } from './tasks/AcceptedTasks';
 import { Task } from './Task';
 import { BigNumber } from 'ethers';
+import { HeaderBanner } from './HeaderBanner';
 
 interface ClientProps {
   walletAddress: string;
@@ -17,7 +18,20 @@ interface ClientProps {
 const styles = {
   container: {
     margin: '40px',
+    padding: '30px',
+    border: '1px solid grey',
+    borderRadius: '6px',
+    marginTop: '30px',
   },
+};
+
+interface Props {
+  children: React.ReactChildren | ReactElement;
+}
+
+const Container = (props: Props) => {
+  const { children } = props;
+  return <div style={styles.container}>{children}</div>;
 };
 
 export function ClientView(props: ClientProps) {
@@ -60,7 +74,7 @@ export function ClientView(props: ClientProps) {
     if (!pollData) {
       const pollDataInterval = setInterval(() => {
         fetchTasks();
-      }, 1000);
+      }, 5000);
       setPollData(true);
       setPollDataInterval(pollDataInterval);
     }
@@ -71,20 +85,32 @@ export function ClientView(props: ClientProps) {
   }, [pollData, pollDataInterval]);
 
   return (
-    <div style={styles.container}>
-      <ProposedTasks
-        proposedTasks={proposedTasks}
-        isClientView={true}
-      />
-      <AcceptedTasks
-        acceptedTasks={acceptedTasks}
-        smartContract={smartContract}
-      />
-      <ActiveTasks
-        smartContract={smartContract}
-        isCLientView={true}
-        activeTasks={tasks}
-      />
+    <div style={{ overflow: 'scroll' }}>
+      <div style={{ margin: '40px' }}>
+        <HeaderBanner
+          walletAddress={walletAddress}
+          isClientView={true}
+        />
+      </div>
+      <Container>
+        <ProposedTasks
+          proposedTasks={proposedTasks}
+          isClientView={true}
+        />
+      </Container>
+      <Container>
+        <AcceptedTasks
+          acceptedTasks={acceptedTasks}
+          smartContract={smartContract}
+        />
+      </Container>
+      <Container>
+        <ActiveTasks
+          smartContract={smartContract}
+          isCLientView={true}
+          activeTasks={tasks}
+        />
+      </Container>
     </div>
   );
 }
