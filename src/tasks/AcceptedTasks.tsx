@@ -2,10 +2,12 @@ import { Button, HTMLTable, Intent } from '@blueprintjs/core';
 import { Task } from '../Task';
 import { Freelancer } from '../generated/abis';
 import { Link } from 'react-router-dom';
+import { BigNumber } from 'ethers';
 
 interface AcceptedTaskProps {
   acceptedTasks: Array<Task>;
   smartContract: Freelancer;
+  removeAcceptedTask: (taskId: BigNumber) => void;
 }
 
 export function AcceptedTasks(props: AcceptedTaskProps) {

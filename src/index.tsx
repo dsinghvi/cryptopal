@@ -5,7 +5,7 @@ import reportWebVitals from './reportWebVitals';
 import { FreeLancerView } from './FreeLancerView';
 import { Freelancer, Freelancer__factory } from './generated/abis';
 import { CONTRACT_ADDR } from './ContractAddress';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { ClientView } from './ClientView';
 import useProposedTasks from './hooks/useProposedTasks';
 import useAcceptedTasks from './hooks/useAcceptedTasks';
@@ -18,6 +18,8 @@ import {
   Switch,
   Redirect,
 } from 'react-router-dom';
+import { Task } from './Task';
+import getAcceptedTasks from './hooks/useAcceptedTasks';
 
 const Controller = () => {
   //@ts-ignore
@@ -39,7 +41,7 @@ const Controller = () => {
 
   const [walletAddr, setWalletAddr] = useState('');
   const proposedTasks = useProposedTasks(walletAddr);
-  const acceptedTasks = useAcceptedTasks(walletAddr);
+  let acceptedTasks, setAcceptedTasks = useState(getAcceptedTasks(walletAddr));
 
   if (walletAddr === '') {
     return (
@@ -62,6 +64,7 @@ const Controller = () => {
             smartContract={freelancerSmartContract}
             proposedTasks={proposedTasks}
             acceptedTasks={acceptedTasks}
+            removeAcceptedTask={taskId => removeAcceptedTask(taskId, setAcceptedTasks)}
           />
         </Route>
         <Route path="/:address">
@@ -83,6 +86,14 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root'),
 );
+
+function removeAcceptedTask(taskId: BigNumber, setAcceptedTasks: React.Dispatch<React.SetStateAction<Task[]>>) {
+  console.log("removeAcceptedTask called with " + taskId)
+  setAcceptedTasks(prevAcceptedTasks => {
+    const filteredTasks = prevAcceptedTasks.filter(task => !task.taskId.eq(taskId));
+    return [...filteredTasks]
+  })
+}
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
