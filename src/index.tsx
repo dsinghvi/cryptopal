@@ -18,9 +18,8 @@ import {
   Switch,
   Redirect,
 } from 'react-router-dom';
-import { Task } from './Task';
-import getAcceptedTasks from './hooks/useAcceptedTasks';
 import deleteAcceptedTask from './hooks/deleteAcceptedTask';
+import { Task } from './Task';
 
 const Controller = () => {
   //@ts-ignore
@@ -42,11 +41,17 @@ const Controller = () => {
 
   const [walletAddr, setWalletAddr] = useState('');
   const proposedTasks = useProposedTasks(walletAddr);
-  let acceptedTasks = useAcceptedTasks(walletAddr);
+  const initAcceptedTasks = useAcceptedTasks(walletAddr);
+  let [acceptedTasks, setAcceptedTasks] = useState(initAcceptedTasks)
 
   if (freelancerSmartContract !== undefined) {
     freelancerSmartContract.on("workFunded", (contractTask: any) => {
-      acceptedTasks = deleteAcceptedTask(acceptedTasks, contractTask.id);
+      setAcceptedTasks(prevAcceptedTasks => {
+        let filteredTasks = [
+          ...prevAcceptedTasks.filter(task => !task.taskId.eq(contractTask.id))
+        ];
+        return filteredTasks;
+      })
     })
   }
 
