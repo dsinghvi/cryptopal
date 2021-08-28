@@ -10,14 +10,14 @@ export enum TaskVote {
 export class Task {
   constructor(
     taskDescription: string,
-    taskPrice: number,
+    taskPriceInGwei: number,
     clientWallet: string,
     contractorWallet?: string,
     clientVote?: TaskVote,
     contractorVote?: TaskVote,
     taskId?: BigNumber,
   ) {
-    this.taskPrice = taskPrice;
+    this.taskPriceInGwei = taskPriceInGwei;
     this.taskDescription = taskDescription;
     this.clientWallet = clientWallet;
     this.contractorWallet = contractorWallet;
@@ -34,13 +34,19 @@ export class Task {
   }
 
   taskId: BigNumber;
-  taskPrice: number;
+  taskPriceInGwei: number;
   taskDescription: string;
   clientWallet: string;
   contractorWallet?: string;
 
   clientVote: TaskVote;
   contractorVote: TaskVote;
+
+  getPricingText() {
+    const eth = 0.000000001 * this.taskPriceInGwei;
+    const usd = eth * 3000;
+    return eth + " eth (" + usd + " usd)";
+  }
 }
 
 function getRandomInt(min: number, max: number) {

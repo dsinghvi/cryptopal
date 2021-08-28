@@ -25,7 +25,7 @@ export function AcceptedTasks(props: AcceptedTaskProps) {
     const fundWorkResponse = await smartContract.fundWork(
       acceptedTask.taskId,
       acceptedTask.taskDescription,
-      acceptedTask.taskPrice,
+      acceptedTask.taskPrice * 1000000000,
       //@ts-ignore
       acceptedTask.contractorWallet as string,
       { value: acceptedTask.taskPrice },
@@ -52,7 +52,7 @@ export function AcceptedTasks(props: AcceptedTaskProps) {
             acceptedTasks.map((acceptedTask) => (
               <tr>
                 <td>{acceptedTask.taskDescription}</td>
-                <td>{acceptedTask.taskPrice}</td>
+                <td>{acceptedTask.getPricingText()}</td>
                 <td>
                   {' '}
                   <Link to={`/${acceptedTask.contractorWallet}`}>
