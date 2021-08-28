@@ -63,7 +63,7 @@ export function ActiveTasks(props: ActiveTaskProps) {
               return (
                 <tr>
                   <td>{activeTask.taskDescription}</td>
-                  <td>{activeTask.taskPrice}</td>
+                  <td>{activeTask.getPricingText()}</td>
                   <td>
                     {props.isCLientView ? (
                       <Link to={`/${activeTask.contractorWallet}`}>

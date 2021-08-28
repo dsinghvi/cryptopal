@@ -41,7 +41,7 @@ const ProposedTaskItem = (props: ProposedTaskItemProps) => {
             <Row>
               <Text
                 strong
-              >{`Budget: ${proposedTask.taskPrice}`}</Text>
+              >{`Budget: ${proposedTask.getPricingText()}`}</Text>
             </Row>
             {isClientView ? null : (
               <Row>
