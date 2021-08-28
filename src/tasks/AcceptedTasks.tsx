@@ -19,16 +19,16 @@ export function AcceptedTasks(props: AcceptedTaskProps) {
   const [fundWorkProgress, setFundWorkProgress] =
     React.useState(null);
 
-  const fundWork = React.useCallback(async (acceptedTask) => {
+  const fundWork = React.useCallback(async (acceptedTask: Task) => {
     setFundWorkLoading(true);
-    setFundWorkProgress(acceptedTask.taskId);
+    setFundWorkProgress(acceptedTask.taskId as any);
     const fundWorkResponse = await smartContract.fundWork(
       acceptedTask.taskId,
       acceptedTask.taskDescription,
-      acceptedTask.taskPrice * 1000000000,
+      acceptedTask.taskPriceInWei,
       //@ts-ignore
       acceptedTask.contractorWallet as string,
-      { value: acceptedTask.taskPrice },
+      { value: acceptedTask.taskPriceInWei },
     );
     await fundWorkResponse.wait(1);
     // HACK - Figure out how to await till we get confirmation from Blockchain

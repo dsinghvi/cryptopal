@@ -10,14 +10,14 @@ export enum TaskVote {
 export class Task {
   constructor(
     taskDescription: string,
-    taskPriceInGwei: number,
+    taskPriceInWei: BigNumber,
     clientWallet: string,
     contractorWallet?: string,
     clientVote?: TaskVote,
     contractorVote?: TaskVote,
     taskId?: BigNumber,
   ) {
-    this.taskPriceInGwei = taskPriceInGwei;
+    this.taskPriceInWei = taskPriceInWei;
     this.taskDescription = taskDescription;
     this.clientWallet = clientWallet;
     this.contractorWallet = contractorWallet;
@@ -30,11 +30,11 @@ export class Task {
     this.taskId =
       taskId !== undefined
         ? taskId
-        : BigNumber.from(getRandomInt(1, 1000000));
+        : BigNumber.from(getRandomInt(1, 1000));
   }
 
   taskId: BigNumber;
-  taskPriceInGwei: number;
+  taskPriceInWei: BigNumber;
   taskDescription: string;
   clientWallet: string;
   contractorWallet?: string;
@@ -43,8 +43,9 @@ export class Task {
   contractorVote: TaskVote;
 
   getPricingText() {
-    const eth = 0.000000001 * this.taskPriceInGwei;
-    const usd = eth * 3000;
+    let exp = BigNumber.from("10").pow(18);
+    const eth = this.taskPriceInWei.div(exp);
+    const usd = eth.mul(3000)
     return eth + " eth (" + usd + " usd)";
   }
 }

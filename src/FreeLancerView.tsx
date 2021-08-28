@@ -59,7 +59,7 @@ export function FreeLancerView(props: ClientProps) {
             smartContract && (await smartContract.getTask(taskId));
           return new Task(
             task.description,
-            Number(task.value),
+            task.value,
             task.client.addr,
             task.freelancer.addr,
             task.client.vote,
