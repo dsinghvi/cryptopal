@@ -4,6 +4,8 @@ import { Task, TaskVote } from '../Task';
 import { Freelancer } from '../generated/abis';
 import { BigNumber } from 'ethers';
 import { Link } from 'react-router-dom';
+import { Card, Typography, Row, Skeleton } from 'antd';
+const { Text, Title } = Typography;
 
 interface ActiveTaskProps {
   isCLientView: boolean;
@@ -34,14 +36,15 @@ export function ActiveTasks(props: ActiveTaskProps) {
 
   if (activeTasks.length <= 0) {
     return (
-      <div style={styles.loadingContainer}>
-        Loading Active Tasks...
-      </div>
+      <>
+        <Title>Active Tasks</Title>
+        <Skeleton paragraph={{ rows: 4 }} />
+      </>
     );
   }
   return (
     <div>
-      <h4>Active Tasks</h4>
+      <Title style={{ marginTop: '20px' }}>Active Projects</Title>
       <HTMLTable bordered={true} interactive={true} striped={true}>
         <thead>
           <tr>
@@ -114,7 +117,7 @@ const VoteCell = React.memo((props: VoteCellProps) => {
           .clientVote(task.taskId, TaskVote.Approved);
         await approvedClientVoteResponse.wait(1);
         // HACK - Figure out how to await till we get confirmation from Blockchain
-        await delay(10000);
+        await delay(5000);
         // setCastVoteApproveLoading(false);
         // setCastVoteProgress(undefined);
       } else {
@@ -125,7 +128,7 @@ const VoteCell = React.memo((props: VoteCellProps) => {
           );
         await approvedFreelancerVoteResponse.wait(1);
         // HACK - Figure out how to await till we get confirmation from Blockchain
-        await delay(10000);
+        await delay(5000);
         setCastVoteApproveLoading(false);
         setCastVoteProgress(undefined);
       }
@@ -145,7 +148,7 @@ const VoteCell = React.memo((props: VoteCellProps) => {
           );
         await declinedClientVoteResponse.wait(1);
         // HACK - Figure out how to await till we get confirmation from Blockchain
-        await delay(10000);
+        await delay(5000);
         setCastVoteDeclineLoading(false);
         setCastVoteProgress(undefined);
       } else {
@@ -156,7 +159,7 @@ const VoteCell = React.memo((props: VoteCellProps) => {
           );
         await declinedFreelancerVoteResponse.wait(1);
         // HACK - Figure out how to await till we get confirmation from Blockchain
-        await delay(10000);
+        await delay(5000);
         setCastVoteDeclineLoading(false);
         setCastVoteProgress(undefined);
       }
