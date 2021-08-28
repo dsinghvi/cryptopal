@@ -3,6 +3,7 @@ import { Button, HTMLTable, Intent } from '@blueprintjs/core';
 import { Task, TaskVote } from '../Task';
 import { Freelancer } from '../generated/abis';
 import { BigNumber } from 'ethers';
+import { Link } from 'react-router-dom';
 
 interface ActiveTaskProps {
   isCLientView: boolean;
@@ -61,9 +62,15 @@ export function ActiveTasks(props: ActiveTaskProps) {
                   <td>{activeTask.taskDescription}</td>
                   <td>{activeTask.taskPrice}</td>
                   <td>
-                    {props.isCLientView
-                      ? activeTask.contractorWallet
-                      : activeTask.clientWallet}
+                    {props.isCLientView ? (
+                      <Link to={`/${activeTask.contractorWallet}`}>
+                        {activeTask.contractorWallet}
+                      </Link>
+                    ) : (
+                      <Link to={`/${activeTask.clientWallet}`}>
+                        {activeTask.clientWallet}
+                      </Link>
+                    )}
                   </td>
                   <td>
                     {props.isCLientView
