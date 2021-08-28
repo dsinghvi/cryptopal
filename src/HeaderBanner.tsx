@@ -62,7 +62,7 @@ export function HeaderBanner(props: HeaderBannerProps) {
             alignItems: 'center',
           }}
         >
-          Crypto Talent
+          {props.isClientView ? "Cryptopal: Client view" : "Cryptopal: Freelancer view" }
         </Title>
       </div>
 

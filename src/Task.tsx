@@ -7,11 +7,21 @@ export enum TaskVote {
   Undecided,
 }
 
+export enum TaskStatus {
+  funded,
+  transferred,
+  refunded,
+  disagreed,
+  proposed,
+  accepted
+}
+
 export class Task {
   constructor(
     taskDescription: string,
     taskPriceInWei: BigNumber,
     clientWallet: string,
+    taskStatus: TaskStatus,
     contractorWallet?: string,
     clientVote?: TaskVote,
     contractorVote?: TaskVote,
@@ -31,6 +41,7 @@ export class Task {
       taskId !== undefined
         ? taskId
         : BigNumber.from(getRandomInt(1, 1000));
+    this.taskStatus = taskStatus;
   }
 
   taskId: BigNumber;
@@ -38,6 +49,8 @@ export class Task {
   taskDescription: string;
   clientWallet: string;
   contractorWallet?: string;
+
+  taskStatus: TaskStatus;
 
   clientVote: TaskVote;
   contractorVote: TaskVote;

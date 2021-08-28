@@ -3,9 +3,10 @@ import { Freelancer } from './generated/abis';
 import { useState } from 'react';
 import { ActiveTasks } from './tasks/ActiveTasks';
 import { ProposedTasks } from './tasks/ProposedTasks';
-import { Task } from './Task';
+import { Task, TaskStatus } from './Task';
 import { useParams, Link } from 'react-router-dom';
 import { HeaderBanner } from './HeaderBanner';
+import { FinishedTasks } from './tasks/FinishedTasks';
 
 interface ClientProps {
   walletAddress: string;
@@ -61,6 +62,7 @@ export function FreeLancerView(props: ClientProps) {
             task.description,
             task.value,
             task.client.addr,
+            task.status,
             task.freelancer.addr,
             task.client.vote,
             task.freelancer.vote,
@@ -106,7 +108,14 @@ export function FreeLancerView(props: ClientProps) {
         <ActiveTasks
           smartContract={smartContract}
           isCLientView={false}
-          activeTasks={tasks}
+          activeTasks={tasks.filter(task => task.taskStatus === TaskStatus.funded)}
+        />
+      </Container>
+      <Container>
+        <FinishedTasks
+          smartContract={smartContract}
+          isCLientView={true}
+          finishedTasks={tasks.filter(task => task.taskStatus !== TaskStatus.funded)}
         />
       </Container>
     </div>

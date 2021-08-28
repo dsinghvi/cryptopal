@@ -4,9 +4,10 @@ import { useState } from 'react';
 import { ActiveTasks } from './tasks/ActiveTasks';
 import { ProposedTasks } from './tasks/ProposedTasks';
 import { AcceptedTasks } from './tasks/AcceptedTasks';
-import { Task } from './Task';
+import { Task, TaskStatus } from './Task';
 import { BigNumber } from 'ethers';
 import { HeaderBanner } from './HeaderBanner';
+import { FinishedTasks } from './tasks/FinishedTasks';
 
 interface ClientProps {
   walletAddress: string;
@@ -60,6 +61,7 @@ export function ClientView(props: ClientProps) {
             task.description,
             task.value,
             task.client.addr,
+            task.status,
             task.freelancer.addr,
             task.client.vote,
             task.freelancer.vote,
@@ -108,7 +110,14 @@ export function ClientView(props: ClientProps) {
         <ActiveTasks
           smartContract={smartContract}
           isCLientView={true}
-          activeTasks={tasks}
+          activeTasks={tasks.filter(task => task.taskStatus === TaskStatus.funded)}
+        />
+      </Container>
+      <Container>
+        <FinishedTasks
+          smartContract={smartContract}
+          isCLientView={true}
+          finishedTasks={tasks.filter(task => task.taskStatus !== TaskStatus.funded)}
         />
       </Container>
     </div>
