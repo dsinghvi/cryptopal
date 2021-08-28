@@ -1,24 +1,27 @@
-const hre = require("hardhat");
+const hre = require('hardhat');
 
 async function main() {
-    const [deployer] = await hre.ethers.getSigners();
+  const [deployer] = await hre.ethers.getSigners();
 
-    console.log(
-        "Deploying the contracts with the account:",
-        await deployer.getAddress()
-    );
+  console.log(
+    'Deploying the contracts with the account:',
+    await deployer.getAddress(),
+  );
 
-    const Freelancer = await hre.ethers.getContractFactory("Freelancer");
-    const freelancerContract = await Freelancer.deploy();
+  const Freelancer = await hre.ethers.getContractFactory(
+    'Freelancer',
+  );
+  const freelancerContract = await Freelancer.deploy();
 
-    await freelancerContract.deployed();
-    console.log(`Ethereum faucet deployed to address: ${freelancerContract.address}`);
-
+  await freelancerContract.deployed();
+  console.log(
+    `Ethereum faucet deployed to address: ${freelancerContract.address}`,
+  );
 }
 
 main()
-    .then(() => process.exit(0))
-    .catch(error => {
-        console.log(error);
-        process.exit(1);
-    });
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.log(error);
+    process.exit(1);
+  });
