@@ -2,6 +2,8 @@ import React from 'react';
 import { Button, HTMLTable, Intent } from '@blueprintjs/core';
 import { Task, TaskVote } from '../Task';
 import { Freelancer } from '../generated/abis';
+import { BigNumber } from 'ethers';
+import { Link } from 'react-router-dom';
 
 interface ActiveTaskProps {
   isCLientView: boolean;
@@ -9,14 +11,34 @@ interface ActiveTaskProps {
   smartContract: Freelancer;
 }
 
+interface VoteCellProps {
+  isCLientView: boolean;
+  smartContract: Freelancer;
+  task: Task;
+}
+
 const styles = {
   buttonMargin: {
     marginRight: '10px',
   },
+  loadingContainer: {
+    margin: '40px',
+  },
 };
 
+const delay = (ms: number) =>
+  new Promise((res) => setTimeout(res, ms));
+
 export function ActiveTasks(props: ActiveTaskProps) {
-  const { activeTasks } = props;
+  const { activeTasks, isCLientView, smartContract } = props;
+
+  if (activeTasks.length <= 0) {
+    return (
+      <div style={styles.loadingContainer}>
+        Loading Active Tasks...
+      </div>
+    );
+  }
   return (
     <div>
       <h4>Active Tasks</h4>
@@ -40,16 +62,26 @@ export function ActiveTasks(props: ActiveTaskProps) {
                   <td>{activeTask.taskDescription}</td>
                   <td>{activeTask.taskPrice}</td>
                   <td>
-                    {props.isCLientView
-                      ? activeTask.contractorWallet
-                      : activeTask.clientWallet}
+                    {props.isCLientView ? (
+                      <Link to={`/${activeTask.contractorWallet}`}>
+                        {activeTask.contractorWallet}
+                      </Link>
+                    ) : (
+                      <Link to={`/${activeTask.clientWallet}`}>
+                        {activeTask.clientWallet}
+                      </Link>
+                    )}
                   </td>
                   <td>
                     {props.isCLientView
                       ? TaskVote[activeTask.contractorVote]
                       : TaskVote[activeTask.clientVote]}
                   </td>
-                  {renderVoteCell(props, activeTask)}
+                  <VoteCell
+                    isCLientView={isCLientView}
+                    smartContract={smartContract}
+                    task={activeTask}
+                  />
                 </tr>
               );
             })}
@@ -60,12 +92,81 @@ export function ActiveTasks(props: ActiveTaskProps) {
   );
 }
 
-function renderVoteCell(props: ActiveTaskProps, task: Task) {
-  const voted = hasVoted(props.isCLientView, task);
+const VoteCell = React.memo((props: VoteCellProps) => {
+  const { isCLientView, smartContract, task } = props;
+  const [castVoteApproveLoading, setCastVoteApproveLoading] =
+    React.useState(false);
+  const [castVoteDeclineLoading, setCastVoteDeclineLoading] =
+    React.useState(false);
+  const [castVoteProgress, setCastVoteProgress] = React.useState<
+    BigNumber | undefined
+  >(undefined);
+
+  const voted = hasVoted(isCLientView, task);
+
+  const castApproval = React.useCallback(
+    async (isCLientView, smartContract, task) => {
+      setCastVoteApproveLoading(true);
+      setCastVoteProgress(task.taskId);
+      if (isCLientView) {
+        const approvedClientVoteResponse = await smartContract
+          // @ts-ignore
+          .clientVote(task.taskId, TaskVote.Approved);
+        await approvedClientVoteResponse.wait(1);
+        // HACK - Figure out how to await till we get confirmation from Blockchain
+        await delay(10000);
+        // setCastVoteApproveLoading(false);
+        // setCastVoteProgress(undefined);
+      } else {
+        const approvedFreelancerVoteResponse =
+          await smartContract.freelancerVote(
+            task.taskId as any,
+            TaskVote.Approved,
+          );
+        await approvedFreelancerVoteResponse.wait(1);
+        // HACK - Figure out how to await till we get confirmation from Blockchain
+        await delay(10000);
+        setCastVoteApproveLoading(false);
+        setCastVoteProgress(undefined);
+      }
+    },
+    [],
+  );
+
+  const castDeclined = React.useCallback(
+    async (isCLientView, smartContract, task) => {
+      setCastVoteDeclineLoading(true);
+      setCastVoteProgress(task.taskId);
+      if (isCLientView) {
+        const declinedClientVoteResponse =
+          await smartContract.clientVote(
+            task.taskId as any,
+            TaskVote.Declined,
+          );
+        await declinedClientVoteResponse.wait(1);
+        // HACK - Figure out how to await till we get confirmation from Blockchain
+        await delay(10000);
+        setCastVoteDeclineLoading(false);
+        setCastVoteProgress(undefined);
+      } else {
+        const declinedFreelancerVoteResponse =
+          await smartContract.freelancerVote(
+            task.taskId as any,
+            TaskVote.Declined,
+          );
+        await declinedFreelancerVoteResponse.wait(1);
+        // HACK - Figure out how to await till we get confirmation from Blockchain
+        await delay(10000);
+        setCastVoteDeclineLoading(false);
+        setCastVoteProgress(undefined);
+      }
+    },
+    [],
+  );
   if (voted) {
     return (
       <td>
-        {props.isCLientView
+        {isCLientView
           ? TaskVote[task.clientVote]
           : TaskVote[task.contractorVote]}
       </td>
@@ -74,26 +175,24 @@ function renderVoteCell(props: ActiveTaskProps, task: Task) {
     return (
       <td>
         <Button
+          loading={
+            castVoteProgress === task.taskId && castVoteApproveLoading
+          }
           style={styles.buttonMargin}
           intent={Intent.SUCCESS}
-          onClick={() =>
-            castApproval(
-              props.isCLientView,
-              props.smartContract,
-              task,
-            )
+          onClick={async () =>
+            await castApproval(isCLientView, smartContract, task)
           }
         >
           Approve
         </Button>
         <Button
+          loading={
+            castVoteProgress === task.taskId && castVoteDeclineLoading
+          }
           intent={Intent.DANGER}
-          onClick={() =>
-            castDeclined(
-              props.isCLientView,
-              props.smartContract,
-              task,
-            )
+          onClick={async () =>
+            await castDeclined(isCLientView, smartContract, task)
           }
         >
           Deny
@@ -101,40 +200,7 @@ function renderVoteCell(props: ActiveTaskProps, task: Task) {
       </td>
     );
   }
-}
-
-function castApproval(
-  isClientView: boolean,
-  smartContract: Freelancer,
-  task: Task,
-) {
-  if (isClientView) {
-    smartContract
-      // @ts-ignore
-      .clientVote(task.taskId, TaskVote.Approved)
-      .catch((err) => console.log(err));
-  } else {
-    smartContract
-      .freelancerVote(task.taskId as any, TaskVote.Approved)
-      .catch((err) => console.log(err));
-  }
-}
-
-function castDeclined(
-  isClientView: boolean,
-  smartContract: Freelancer,
-  task: Task,
-) {
-  if (isClientView) {
-    smartContract
-      .clientVote(task.taskId as any, TaskVote.Declined)
-      .catch((err) => console.log(err));
-  } else {
-    smartContract
-      .freelancerVote(task.taskId as any, TaskVote.Declined)
-      .catch((err) => console.log(err));
-  }
-}
+});
 
 function hasVoted(isClientView: boolean, task: Task) {
   if (isClientView) {
