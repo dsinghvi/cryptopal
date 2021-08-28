@@ -211,4 +211,11 @@ contract Freelancer {
         returns(Work memory) {
         return contracts[_id];
     }
+
+    function getBalance() 
+        public
+        view 
+        returns(uint256) {
+        return msg.sender.balance;
+    }
 }
