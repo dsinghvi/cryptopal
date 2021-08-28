@@ -7,8 +7,18 @@ interface ProposedTaskProps {
   isClientView: boolean;
 }
 
+const delay = (ms: number) =>
+  new Promise((res) => setTimeout(res, ms));
+
 export function ProposedTasks(props: ProposedTaskProps) {
   const { proposedTasks, isClientView } = props;
+  const [proposedTaskLoading, setProposedTaskLoading] =
+    React.useState(false);
+  const acceptTask = React.useCallback(async () => {
+    setProposedTaskLoading(true);
+    await delay(10000);
+    setProposedTaskLoading(false);
+  }, []);
   return (
     <div>
       <h4>Proposed Tasks</h4>
@@ -28,7 +38,7 @@ export function ProposedTasks(props: ProposedTaskProps) {
                 <td>
                   <Button
                     intent={Intent.PRIMARY}
-                    onClick={() => console.log('Accept task')}
+                    onClick={acceptTask}
                   >
                     Accept Task
                   </Button>

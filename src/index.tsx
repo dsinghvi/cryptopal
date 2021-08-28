@@ -11,6 +11,7 @@ import useProposedTasks from './hooks/useProposedTasks';
 import useAcceptedTasks from './hooks/useAcceptedTasks';
 import './App.css';
 import { ConnectWallet } from './ConnectWallet';
+import { BigNumber } from 'ethers';
 
 import {
   Route,
@@ -51,6 +52,39 @@ const Controller = () => {
       />
     );
   }
+
+  freelancerSmartContract &&
+    freelancerSmartContract.on(
+      'workFunded',
+      (
+        task: // Copy paste this type from the generated typescript bindings
+        [
+          [string, number] & { addr: string; vote: number },
+          [string, number] & { addr: string; vote: number },
+          string,
+          BigNumber,
+          number,
+          number,
+          [string, number] & { addr: string; vote: number },
+        ] & {
+          freelancer: [string, number] & {
+            addr: string;
+            vote: number;
+          };
+          client: [string, number] & { addr: string; vote: number };
+          description: string;
+          value: BigNumber;
+          status: number;
+          consensusType: number;
+          thirdParty: [string, number] & {
+            addr: string;
+            vote: number;
+          };
+        },
+      ) => {
+        console.log('task was funded' + task.description);
+      },
+    );
 
   return (
     <Router>
