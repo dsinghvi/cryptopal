@@ -49,31 +49,27 @@ export function ClientView(props: ClientProps) {
     React.useState<NodeJS.Timeout>();
 
   const fetchTasks = React.useCallback(async () => {
-    try {
-      const taskIds =
-        smartContract &&
-        (await smartContract.getTaskForClient(walletAddress));
-      const tasks =
-        taskIds &&
-        (await Promise.all(
-          taskIds.map(async (taskId) => {
-            const task =
-              smartContract && (await smartContract.getTask(taskId));
-            return new Task(
-              task.description,
-              task.value,
-              task.client.addr,
-              task.status,
-              task.freelancer.addr,
-              task.client.vote,
-              task.freelancer.vote,
-              taskId,
-            );
-          }),
-        ));
-    } catch (e: any) {
-      console.log(e);
-    }
+    const taskIds =
+      smartContract &&
+      (await smartContract.getTaskForClient(walletAddress));
+    const tasks =
+      taskIds &&
+      (await Promise.all(
+        taskIds.map(async (taskId) => {
+          const task =
+            smartContract && (await smartContract.getTask(taskId));
+          return new Task(
+            task.description,
+            task.value,
+            task.client.addr,
+            task.status,
+            task.freelancer.addr,
+            task.client.vote,
+            task.freelancer.vote,
+            taskId,
+          );
+        }),
+      ));
     setTasks(tasks);
   }, [walletAddress, smartContract]);
 
