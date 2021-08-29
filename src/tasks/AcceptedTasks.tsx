@@ -31,7 +31,7 @@ export function AcceptedTasks(props: AcceptedTaskProps) {
 
     setFundWorkLoading(true);
     setFundWorkProgress(acceptedTask.taskId as any);
-
+    console.log("the taskPrice is " + taskPriceInWei);
     const fundWorkResponse = await smartContract.fundWork(
       taskId,
       taskDescription,
