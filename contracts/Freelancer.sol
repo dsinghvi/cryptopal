@@ -1,3 +1,4 @@
+
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
@@ -11,11 +12,7 @@ contract Freelancer {
      *   6. Freelancers withdraw funds.
      */
 
-    // potentially include proposal, accepted, started statuses later
-    enum Status {
-        funded,
-        finished
-    }
+    enum Status { funded, transferred, refunded, disagreed }
 
     enum Vote {
         approved,
@@ -201,13 +198,19 @@ contract Freelancer {
         Work memory agreement = contracts[_id];
         if (agreement.client.vote == Vote.approved) {
             agreement.freelancer.addr.transfer(agreement.value);
+            contracts[_id].status = Status.transferred;
             emit transferFunds();
         } else if (
             agreement.client.vote == Vote.declined &&
             agreement.freelancer.vote == Vote.declined
         ) {
             agreement.client.addr.transfer(agreement.value);
+            contracts[_id].status = Status.refunded;
             emit transferFunds();
+        } else if (agreement.client.vote != Vote.undecided 
+            && agreement.freelancer.vote != Vote.undecided
+            && agreement.client.vote != agreement.freelancer.vote) {
+            contracts[_id].status = Status.disagreed;
         }
     }
 
@@ -224,10 +227,16 @@ contract Freelancer {
             agreement.freelancer.vote == Vote.approved
         ) {
             agreement.freelancer.addr.transfer(agreement.value);
+            contracts[_id].status = Status.transferred;
             emit transferFunds();
         } else if (agreement.freelancer.vote == Vote.declined) {
             agreement.client.addr.transfer(agreement.value);
+            contracts[_id].status = Status.refunded;
             emit transferFunds();
+        } else if (agreement.client.vote != Vote.undecided 
+            && agreement.freelancer.vote != Vote.undecided
+            && agreement.client.vote != agreement.freelancer.vote) {
+            contracts[_id].status = Status.disagreed;
         }
     }
 
@@ -241,9 +250,11 @@ contract Freelancer {
         Work memory agreement = contracts[_id];
         if (vote == Vote.approved) {
             agreement.freelancer.addr.transfer(agreement.value);
+            contracts[_id].status = Status.transferred;
             emit transferFunds();
         } else if (vote == Vote.declined) {
             agreement.client.addr.transfer(agreement.value);
+            contracts[_id].status = Status.refunded;
             emit transferFunds();
         }
     }
@@ -266,5 +277,12 @@ contract Freelancer {
 
     function getTask(uint256 _id) public view returns (Work memory) {
         return contracts[_id];
+    }
+
+    function getBalance() 
+        public
+        view 
+        returns(uint256) {
+        return msg.sender.balance;
     }
 }

@@ -1,25 +1,30 @@
-import { Task } from '../Task';
+import { BigNumber } from 'ethers';
+import { Task, TaskStatus } from '../Task';
+import { getWeiFromEth } from './useProposedTasks';
 
 const useAcceptedTasks = (walletAddr: any) => {
   return [
     new Task(
       'Integrate my app with polygon',
-      1,
+      getWeiFromEth(10),
       walletAddr,
-      '0x15d34aaf54267db7d7c367839aaf71a00a2c6a65',
+      TaskStatus.accepted,
+      '0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc',
     ),
     new Task(
       'Mint 400 NFTs',
-      2,
+      getWeiFromEth(20),
       walletAddr,
-      '0x9965507d1a55bcc2695c58ba16fb37d819b0a4dc',
+      TaskStatus.accepted,
+      '0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc',
     ),
     new Task(
       'Win 10 races on my zed run account',
-      3,
+      getWeiFromEth(30),
       walletAddr,
-      '0x976ea74026e726554db657fa54763abd0c3a0aa9',
-    ),
+      TaskStatus.accepted,
+      '0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc',
+    )
   ];
 };
 

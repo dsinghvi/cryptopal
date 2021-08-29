@@ -5,7 +5,7 @@ import reportWebVitals from './reportWebVitals';
 import { FreeLancerView } from './FreeLancerView';
 import { Freelancer, Freelancer__factory } from './generated/abis';
 import { CONTRACT_ADDR } from './ContractAddress';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { ClientView } from './ClientView';
 import useProposedTasks from './hooks/useProposedTasks';
 import useAcceptedTasks from './hooks/useAcceptedTasks';
@@ -18,6 +18,8 @@ import {
   Switch,
   Redirect,
 } from 'react-router-dom';
+import deleteAcceptedTask from './hooks/deleteAcceptedTask';
+import { Task } from './Task';
 
 const Controller = () => {
   //@ts-ignore
@@ -39,7 +41,19 @@ const Controller = () => {
 
   const [walletAddr, setWalletAddr] = useState('');
   const proposedTasks = useProposedTasks(walletAddr);
-  const acceptedTasks = useAcceptedTasks(walletAddr);
+  const initAcceptedTasks = useAcceptedTasks(walletAddr);
+  let [acceptedTasks, setAcceptedTasks] = useState(initAcceptedTasks)
+
+  if (freelancerSmartContract !== undefined) {
+    freelancerSmartContract.on("workFunded", (contractTask: any) => {
+      setAcceptedTasks(prevAcceptedTasks => {
+        let filteredTasks = [
+          ...prevAcceptedTasks.filter(task => !task.taskId.eq(contractTask.id))
+        ];
+        return filteredTasks;
+      })
+    })
+  }
 
   if (walletAddr === '') {
     return (
@@ -51,6 +65,39 @@ const Controller = () => {
       />
     );
   }
+
+  freelancerSmartContract &&
+    freelancerSmartContract.on(
+      'workFunded',
+      (
+        task: // Copy paste this type from the generated typescript bindings
+        [
+          [string, number] & { addr: string; vote: number },
+          [string, number] & { addr: string; vote: number },
+          string,
+          BigNumber,
+          number,
+          number,
+          [string, number] & { addr: string; vote: number },
+        ] & {
+          freelancer: [string, number] & {
+            addr: string;
+            vote: number;
+          };
+          client: [string, number] & { addr: string; vote: number };
+          description: string;
+          value: BigNumber;
+          status: number;
+          consensusType: number;
+          thirdParty: [string, number] & {
+            addr: string;
+            vote: number;
+          };
+        },
+      ) => {
+        console.log('task was funded' + task.description);
+      },
+    );
 
   return (
     <Router>
