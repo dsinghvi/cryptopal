@@ -77,7 +77,7 @@ export function FreeLancerView(props: ClientProps) {
     if (!pollData) {
       const pollDataInterval = setInterval(() => {
         fetchTasks();
-      }, 5000);
+      }, 2500);
       setPollData(true);
       setPollDataInterval(pollDataInterval);
     }

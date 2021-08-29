@@ -41,7 +41,7 @@ export function AcceptedTasks(props: AcceptedTaskProps) {
 
     await fundWorkResponse.wait(1);
     // HACK - Figure out how to await till we get confirmation from Blockchain
-    await delay(10000);
+    await delay(500);
     setFundWorkLoading(false);
     setFundWorkProgress(null);
   }, []);

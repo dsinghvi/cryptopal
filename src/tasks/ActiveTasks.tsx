@@ -117,7 +117,7 @@ const VoteCell = React.memo((props: VoteCellProps) => {
           .clientVote(task.taskId, TaskVote.Approved);
         await approvedClientVoteResponse.wait(1);
         // HACK - Figure out how to await till we get confirmation from Blockchain
-        await delay(5000);
+        await delay(500);
         // setCastVoteApproveLoading(false);
         // setCastVoteProgress(undefined);
       } else {
@@ -128,7 +128,7 @@ const VoteCell = React.memo((props: VoteCellProps) => {
           );
         await approvedFreelancerVoteResponse.wait(1);
         // HACK - Figure out how to await till we get confirmation from Blockchain
-        await delay(5000);
+        await delay(500);
         setCastVoteApproveLoading(false);
         setCastVoteProgress(undefined);
       }
@@ -148,7 +148,7 @@ const VoteCell = React.memo((props: VoteCellProps) => {
           );
         await declinedClientVoteResponse.wait(1);
         // HACK - Figure out how to await till we get confirmation from Blockchain
-        await delay(5000);
+        await delay(500);
         setCastVoteDeclineLoading(false);
         setCastVoteProgress(undefined);
       } else {
@@ -159,7 +159,7 @@ const VoteCell = React.memo((props: VoteCellProps) => {
           );
         await declinedFreelancerVoteResponse.wait(1);
         // HACK - Figure out how to await till we get confirmation from Blockchain
-        await delay(5000);
+        await delay(500);
         setCastVoteDeclineLoading(false);
         setCastVoteProgress(undefined);
       }
