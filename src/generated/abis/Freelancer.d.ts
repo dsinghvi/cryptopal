@@ -22,6 +22,7 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface FreelancerInterface extends ethers.utils.Interface {
   functions: {
+    "ERC20Token()": FunctionFragment;
     "clientToContractId(address,uint256)": FunctionFragment;
     "clientVote(uint256,uint8)": FunctionFragment;
     "contracts(uint256)": FunctionFragment;
@@ -36,6 +37,10 @@ interface FreelancerInterface extends ethers.utils.Interface {
     "thirdPartyVote(uint256,uint8)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "ERC20Token",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "clientToContractId",
     values: [string, BigNumberish]
@@ -85,6 +90,7 @@ interface FreelancerInterface extends ethers.utils.Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
 
+  decodeFunctionResult(functionFragment: "ERC20Token", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "clientToContractId",
     data: BytesLike
@@ -172,6 +178,8 @@ export class Freelancer extends BaseContract {
   interface: FreelancerInterface;
 
   functions: {
+    ERC20Token(overrides?: CallOverrides): Promise<[string]>;
+
     clientToContractId(
       arg0: string,
       arg1: BigNumberish,
@@ -288,6 +296,8 @@ export class Freelancer extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
+  ERC20Token(overrides?: CallOverrides): Promise<string>;
+
   clientToContractId(
     arg0: string,
     arg1: BigNumberish,
@@ -402,6 +412,8 @@ export class Freelancer extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    ERC20Token(overrides?: CallOverrides): Promise<string>;
+
     clientToContractId(
       arg0: string,
       arg1: BigNumberish,
@@ -572,6 +584,8 @@ export class Freelancer extends BaseContract {
   };
 
   estimateGas: {
+    ERC20Token(overrides?: CallOverrides): Promise<BigNumber>;
+
     clientToContractId(
       arg0: string,
       arg1: BigNumberish,
@@ -640,6 +654,8 @@ export class Freelancer extends BaseContract {
   };
 
   populateTransaction: {
+    ERC20Token(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     clientToContractId(
       arg0: string,
       arg1: BigNumberish,

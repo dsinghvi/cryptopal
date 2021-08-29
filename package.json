@@ -30,7 +30,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "abis": "typechain --target ethers-v5 --out-dir src/generated/abis ./src/abis/Freelancer.json ./artifacts/contracts/ERC20Mock.sol/ERC20Mock.json"
+    "abis": "typechain --target ethers-v5 --out-dir src/generated/abis ./artifacts/contracts/Freelancer.sol/Freelancer.json ./artifacts/contracts/ERC20Mock.sol/ERC20Mock.json"
   },
   "eslintConfig": {
     "extends": [
