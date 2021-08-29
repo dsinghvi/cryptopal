@@ -59,7 +59,7 @@ export class Task {
     const eth = this.taskPriceInWei.div(exp);
     const dwrk = eth;
     const usd = eth.mul(3000)
-    return dwrk + "dwrk (" + eth + " eth, " + usd + " usd)";
+    return dwrk + " dwrk (" + eth + " eth, " + usd + " usd)";
   }
 }
 
