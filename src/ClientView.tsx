@@ -1,11 +1,10 @@
 import React, { ReactElement } from 'react';
-import { Freelancer } from './generated/abis';
+import { Freelancer, ERC20Mock } from './generated/abis';
 import { useState } from 'react';
 import { ActiveTasks } from './tasks/ActiveTasks';
 import { ProposedTasks } from './tasks/ProposedTasks';
 import { AcceptedTasks } from './tasks/AcceptedTasks';
 import { Task, TaskStatus } from './Task';
-import { BigNumber } from 'ethers';
 import { HeaderBanner } from './HeaderBanner';
 import { FinishedTasks } from './tasks/FinishedTasks';
 
@@ -14,6 +13,7 @@ interface ClientProps {
   smartContract: Freelancer;
   proposedTasks: Array<Task>;
   acceptedTasks: Task[];
+  tokenContract: ERC20Mock;
 }
 
 const styles = {
@@ -41,6 +41,7 @@ export function ClientView(props: ClientProps) {
     walletAddress,
     proposedTasks,
     acceptedTasks,
+    tokenContract
   } = props;
   const [tasks, setTasks] = useState(new Array<Task>());
   const [pollData, setPollData] = React.useState(false);
@@ -104,6 +105,7 @@ export function ClientView(props: ClientProps) {
         <AcceptedTasks
           acceptedTasks={acceptedTasks}
           smartContract={smartContract}
+          tokenContract={tokenContract}
         />
       </Container>
       <Container>

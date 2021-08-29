@@ -1,4 +1,3 @@
-//@ts-ignore
 import { BigNumber } from 'ethers';
 
 export enum TaskVote {
@@ -58,8 +57,9 @@ export class Task {
   getPricingText() {
     let exp = BigNumber.from("10").pow(18);
     const eth = this.taskPriceInWei.div(exp);
+    const dwrk = eth;
     const usd = eth.mul(3000)
-    return eth + " eth (" + usd + " usd)";
+    return dwrk + "dwrk (" + eth + " eth, " + usd + " usd)";
   }
 }
 

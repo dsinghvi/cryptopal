@@ -3,9 +3,14 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { FreeLancerView } from './FreeLancerView';
-import { Freelancer, Freelancer__factory } from './generated/abis';
-import { CONTRACT_ADDR } from './ContractAddress';
 import { BigNumber, ethers } from 'ethers';
+import {
+  Freelancer,
+  Freelancer__factory,
+  ERC20Mock,
+  ERC20Mock__factory,
+} from './generated/abis';
+import { CONTRACT_ADDR, TOKEN_ADDR } from './ContractAddress';
 import { ClientView } from './ClientView';
 import useProposedTasks from './hooks/useProposedTasks';
 import useAcceptedTasks from './hooks/useAcceptedTasks';
@@ -26,6 +31,8 @@ const Controller = () => {
   const [provider, setProvider] = React.useState<Web3Provider>();
   const [freelancerSmartContract, setFreelancerSmartContract] =
     React.useState<Freelancer>();
+  const [ERC20TokenContract, setERC20TokenContract] =
+    React.useState<ERC20Mock>();
 
   React.useEffect(() => {
     const provider = new ethers.providers.Web3Provider(
@@ -35,8 +42,13 @@ const Controller = () => {
       CONTRACT_ADDR,
       provider.getSigner(0),
     );
+    const ERC20TokenContract = ERC20Mock__factory.connect(
+      TOKEN_ADDR,
+      provider.getSigner(0),
+    );
     setProvider(provider);
     setFreelancerSmartContract(freelancerSmartContract);
+    setERC20TokenContract(ERC20TokenContract);
   }, [window.ethereum]);
 
   const [walletAddr, setWalletAddr] = useState('');
@@ -109,6 +121,8 @@ const Controller = () => {
             smartContract={freelancerSmartContract}
             proposedTasks={proposedTasks}
             acceptedTasks={acceptedTasks}
+            //@ts-ignore
+            tokenContract={ERC20TokenContract}
           />
         </Route>
         <Route path="/:address">
