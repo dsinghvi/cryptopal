@@ -2,5 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { Freelancer } from "./Freelancer";
+export type { ERC20Mock } from "./ERC20Mock";
 
 export { Freelancer__factory } from "./factories/Freelancer__factory";
+export { ERC20Mock__factory } from "./factories/ERC20Mock__factory";

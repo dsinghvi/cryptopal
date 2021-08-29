@@ -1,6 +1,7 @@
-
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
+
+import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
 contract Freelancer {
     /*
@@ -12,7 +13,12 @@ contract Freelancer {
      *   6. Freelancers withdraw funds.
      */
 
-    enum Status { funded, transferred, refunded, disagreed }
+    enum Status {
+        funded,
+        transferred,
+        refunded,
+        disagreed
+    }
 
     enum Vote {
         approved,
@@ -55,7 +61,11 @@ contract Freelancer {
     event workFunded(Work work);
     event transferFunds();
 
-    constructor() {}
+    IERC20 public ERC20Token;
+
+    constructor(address ERC20TokenAddress) {
+        ERC20Token = IERC20(ERC20TokenAddress);
+    }
 
     modifier onlyFreelancer(uint256 _id) {
         require(
@@ -95,9 +105,9 @@ contract Freelancer {
     }
 
     // "_" differentiates between function arguments and global variables
-    modifier sufficientFunds(uint256 _value, uint256 _payment) {
+    modifier sufficientFunds(uint256 _value, address sender) {
         require(
-            _payment == _value,
+            ERC20Token.balanceOf(sender) >= _value,
             'Funds are not equal to approved amount.'
         );
         _;
@@ -119,7 +129,7 @@ contract Freelancer {
     )
         public
         payable
-        sufficientFunds(_value, msg.value)
+        sufficientFunds(_value, msg.sender)
         isAnUnusedId(_id)
     {
         Entity memory entityFreelancer = Entity(
@@ -144,6 +154,8 @@ contract Freelancer {
         freelancerToContractId[_freelancer].push(_id);
         clientToContractId[msg.sender].push(_id);
 
+        ERC20Token.transferFrom(msg.sender, address(this), _value);
+
         emit workFunded(contracts[_id]);
     }
 
@@ -156,7 +168,7 @@ contract Freelancer {
     )
         public
         payable
-        sufficientFunds(_value, msg.value)
+        sufficientFunds(_value, msg.sender)
         isAnUnusedId(_id)
     {
         require(
@@ -185,6 +197,8 @@ contract Freelancer {
         freelancerToContractId[_freelancer].push(_id);
         clientToContractId[msg.sender].push(_id);
 
+        ERC20Token.transferFrom(msg.sender, address(this), _value);
+
         emit workFunded(contracts[_id]);
     }
 
@@ -197,19 +211,27 @@ contract Freelancer {
         contracts[_id].client.vote = vote;
         Work memory agreement = contracts[_id];
         if (agreement.client.vote == Vote.approved) {
-            agreement.freelancer.addr.transfer(agreement.value);
             contracts[_id].status = Status.transferred;
+            ERC20Token.transfer(
+                agreement.freelancer.addr,
+                agreement.value
+            );
             emit transferFunds();
         } else if (
             agreement.client.vote == Vote.declined &&
             agreement.freelancer.vote == Vote.declined
         ) {
-            agreement.client.addr.transfer(agreement.value);
             contracts[_id].status = Status.refunded;
+            ERC20Token.transfer(
+                agreement.client.addr,
+                agreement.value
+            );
             emit transferFunds();
-        } else if (agreement.client.vote != Vote.undecided 
-            && agreement.freelancer.vote != Vote.undecided
-            && agreement.client.vote != agreement.freelancer.vote) {
+        } else if (
+            agreement.client.vote != Vote.undecided &&
+            agreement.freelancer.vote != Vote.undecided &&
+            agreement.client.vote != agreement.freelancer.vote
+        ) {
             contracts[_id].status = Status.disagreed;
         }
     }
@@ -226,16 +248,24 @@ contract Freelancer {
             agreement.client.vote == Vote.approved &&
             agreement.freelancer.vote == Vote.approved
         ) {
-            agreement.freelancer.addr.transfer(agreement.value);
             contracts[_id].status = Status.transferred;
+            ERC20Token.transfer(
+                agreement.freelancer.addr,
+                agreement.value
+            );
             emit transferFunds();
         } else if (agreement.freelancer.vote == Vote.declined) {
-            agreement.client.addr.transfer(agreement.value);
             contracts[_id].status = Status.refunded;
+            ERC20Token.transfer(
+                agreement.client.addr,
+                agreement.value
+            );
             emit transferFunds();
-        } else if (agreement.client.vote != Vote.undecided 
-            && agreement.freelancer.vote != Vote.undecided
-            && agreement.client.vote != agreement.freelancer.vote) {
+        } else if (
+            agreement.client.vote != Vote.undecided &&
+            agreement.freelancer.vote != Vote.undecided &&
+            agreement.client.vote != agreement.freelancer.vote
+        ) {
             contracts[_id].status = Status.disagreed;
         }
     }
@@ -279,10 +309,7 @@ contract Freelancer {
         return contracts[_id];
     }
 
-    function getBalance() 
-        public
-        view 
-        returns(uint256) {
+    function getBalance() public view returns (uint256) {
         return msg.sender.balance;
     }
 }

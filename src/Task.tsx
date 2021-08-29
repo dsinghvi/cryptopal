@@ -1,4 +1,3 @@
-//@ts-ignore
 import { BigNumber } from 'ethers';
 
 export enum TaskVote {
